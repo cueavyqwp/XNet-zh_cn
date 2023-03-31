@@ -122,7 +122,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
     private void setupEvents() {
         window.event("searchbar", (source, params) -> needsRefresh = true);
         for (int i = 0 ; i < MAX_CHANNELS ; i++) {
-            String channel = "频道" + (i+1);
+            String channel = "channel" + (i+1);
             int finalI = i;
             window.event(channel, (source, params) -> selectChannelEditor(finalI));
         }
@@ -143,7 +143,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
         });
 
         for (int i = 0 ; i < MAX_CHANNELS ; i++) {
-            String name = "频道" + (i+1);
+            String name = "channel" + (i+1);
             channelButtons[i] = window.findChild(name);
         }
 
@@ -161,7 +161,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
         ConnectedBlockClientInfo c = tileEntity.clientConnectedBlocks.get(index);
         if (c != null) {
             RFToolsBase.instance.clientInfo.hilightBlock(c.getPos().getPos(), System.currentTimeMillis() + 1000 * 5);
-            Logging.message(minecraft.player, "该块现在突出显示");
+            Logging.message(minecraft.player, "The block is now highlighted");
             minecraft.player.closeContainer();
         }
     }
@@ -317,25 +317,25 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
                     ChannelEditorPanel editor = new ChannelEditorPanel(channelEditPanel, minecraft, this, editingChannel);
                     editor.label("Channel " + (editingChannel + 1))
                             .shift(5)
-                            .toggle(TAG_ENABLED, "在这个通道上启用处理", info.isEnabled())
+                            .toggle(TAG_ENABLED, "Enable processing on this channel", info.isEnabled())
                             .shift(5)
-                            .text(TAG_NAME, "频道名称", info.getChannelName(), 65);
+                            .text(TAG_NAME, "Channel name", info.getChannelName(), 65);
                     info.getChannelSettings().createGui(editor);
 
                     Button remove = button(151, 1, 9, 10, "x")
                             .textOffset(0, -1)
-                            .tooltips("移除此频道")
+                            .tooltips("Remove this channel")
                             .event(this::removeChannel);
                     channelEditPanel.children(remove);
                     editor.setState(info.getChannelSettings());
 
                     Button copyChannel = button(134, 19, 25, 14, "C")
-                            .tooltips("复制频道至", "剪切板")
+                            .tooltips("Copy this channel to", "the clipboard")
                             .event(this::copyChannel);
                     channelEditPanel.children(copyChannel);
 
                     copyConnector = button(114, 19, 25, 14, "C")
-                            .tooltips("复制此连接器", "至剪切板")
+                            .tooltips("Copy this connector", "to the clipboard")
                             .event(this::copyConnector);
                     channelEditPanel.children(copyConnector);
 
@@ -345,10 +345,10 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
                     for (IChannelType channelType : XNet.xNetApi.getChannels().values()) {
                         type.choices(channelType.getID());       // Show names?
                     }
-                    Button create = button(100, 3, 53, 14, "Create")
+                    Button create = button(100, 3, 53, 14, "创建")
                             .event(() -> createChannel(type.getCurrentChoice()));
 
-                    Button paste = button(100, 17, 53, 14, "Paste")
+                    Button paste = button(100, 17, 53, 14, "粘贴")
                             .tooltips("Create a new channel", "from the clipboard")
                             .event(this::pasteChannel);
 
@@ -377,12 +377,12 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
             buttons.children(button("取消").event((() -> {
                 windowManager.closeWindow(askWindow);
             })));
-            buttons.children(button("完成").event(() -> {
+            buttons.children(button("确定").event(() -> {
                 windowManager.closeWindow(askWindow);
                 okEvent.buttonClicked();
             }));
         } else {
-            buttons.children(button("完成").event((() -> {
+            buttons.children(button("确定").event((() -> {
                 windowManager.closeWindow(askWindow);
             })));
         }
@@ -420,7 +420,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
         try {
             Minecraft.getInstance().keyboardHandler.setClipboard(json);
         } catch (Exception e) {
-            showError("Error copying to clipboard!");
+            showError("复制到剪贴板时出错!");
         }
     }
 
@@ -429,7 +429,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
             String json = Minecraft.getInstance().keyboardHandler.getClipboard();
             int max = Config.controllerMaxPaste.get();
             if (max >= 0 && json.length() > max) {
-                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "剪贴板过大!");
+                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "Clipboard too large!");
                 return;
             }
             JsonParser parser = new JsonParser();
@@ -465,7 +465,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
             String json = Minecraft.getInstance().keyboardHandler.getClipboard();
             int max = Config.controllerMaxPaste.get();
             if (max >= 0 && json.length() > max) {
-                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "剪贴板过大!");
+                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "Clipboard too large!");
                 return;
             }
             JsonParser parser = new JsonParser();
@@ -526,7 +526,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
 
                     Button remove = button(151, 1, 9, 10, "x")
                             .textOffset(0, -1)
-                            .tooltips("移除此频道")
+                            .tooltips("Remove this connector")
                             .event(() -> removeConnector(editingConnector));
 
                     ConnectorEditorPanel editor = new ConnectorEditorPanel(connectorEditPanel, minecraft, this, editingChannel, editingConnector);
@@ -540,7 +540,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
                     connectorEditPanel.children(create);
 
                     Button paste = button(85, 40, 60, 14, "粘贴")
-                            .tooltips("创建新频道", "从剪贴板")
+                            .tooltips("Create a new connector", "from the clipboard")
                             .event(this::pasteConnector);
                     connectorEditPanel.children(paste);
                 }
