@@ -122,7 +122,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
     private void setupEvents() {
         window.event("searchbar", (source, params) -> needsRefresh = true);
         for (int i = 0 ; i < MAX_CHANNELS ; i++) {
-            String channel = "channel" + (i+1);
+            String channel = "频道" + (i+1);
             int finalI = i;
             window.event(channel, (source, params) -> selectChannelEditor(finalI));
         }
@@ -143,7 +143,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
         });
 
         for (int i = 0 ; i < MAX_CHANNELS ; i++) {
-            String name = "channel" + (i+1);
+            String name = "频道" + (i+1);
             channelButtons[i] = window.findChild(name);
         }
 
@@ -161,7 +161,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
         ConnectedBlockClientInfo c = tileEntity.clientConnectedBlocks.get(index);
         if (c != null) {
             RFToolsBase.instance.clientInfo.hilightBlock(c.getPos().getPos(), System.currentTimeMillis() + 1000 * 5);
-            Logging.message(minecraft.player, "The block is now highlighted");
+            Logging.message(minecraft.player, "该块现在突出显示");
             minecraft.player.closeContainer();
         }
     }
@@ -429,7 +429,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
             String json = Minecraft.getInstance().keyboardHandler.getClipboard();
             int max = Config.controllerMaxPaste.get();
             if (max >= 0 && json.length() > max) {
-                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "Clipboard too large!");
+                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "剪贴板过大!");
                 return;
             }
             JsonParser parser = new JsonParser();
@@ -456,7 +456,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
             }
             refresh();
         } catch (Exception e) {
-            showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "Error reading from clipboard!");
+            showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "从剪贴板读取时出错!");
         }
     }
 
@@ -465,7 +465,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
             String json = Minecraft.getInstance().keyboardHandler.getClipboard();
             int max = Config.controllerMaxPaste.get();
             if (max >= 0 && json.length() > max) {
-                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "Clipboard too large!");
+                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "剪贴板过大!");
                 return;
             }
             JsonParser parser = new JsonParser();
@@ -484,7 +484,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
 
             refresh();
         } catch (Exception e) {
-            showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "Error reading from clipboard!");
+            showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "从剪贴板读取时出错!");
         }
     }
 
@@ -526,7 +526,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
 
                     Button remove = button(151, 1, 9, 10, "x")
                             .textOffset(0, -1)
-                            .tooltips("Remove this connector")
+                            .tooltips("移除此频道")
                             .event(() -> removeConnector(editingConnector));
 
                     ConnectorEditorPanel editor = new ConnectorEditorPanel(connectorEditPanel, minecraft, this, editingChannel, editingConnector);
@@ -535,12 +535,12 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
                     connectorEditPanel.children(remove);
                     editor.setState(connectorInfo.getConnectorSettings());
                 } else {
-                    Button create = button(85, 20, 60, 14, "Create")
+                    Button create = button(85, 20, 60, 14, "创建")
                             .event(() -> createConnector(editingConnector));
                     connectorEditPanel.children(create);
 
-                    Button paste = button(85, 40, 60, 14, "Paste")
-                            .tooltips("Create a new connector", "from the clipboard")
+                    Button paste = button(85, 40, 60, 14, "粘贴")
+                            .tooltips("创建新频道", "从剪贴板")
                             .event(this::pasteConnector);
                     connectorEditPanel.children(paste);
                 }
