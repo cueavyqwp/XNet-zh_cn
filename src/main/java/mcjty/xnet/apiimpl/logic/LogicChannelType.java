@@ -14,12 +14,12 @@ public class LogicChannelType implements IChannelType {
 
     @Override
     public String getID() {
-        return "xnet.logic";
+        return "逻辑";
     }
 
     @Override
     public String getName() {
-        return "Logic";
+        return "逻辑";
     }
 
     @Override
