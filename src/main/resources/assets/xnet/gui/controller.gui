@@ -10,42 +10,42 @@ window {
             togglebutton('channel1','1') {
                 channel('channel1')
                 desired(14,-1)
-                tooltips('Edit channel 1')
+                tooltips('编辑 频道1')
             }
             togglebutton('channel2','2') {
                 channel('channel2')
                 desired(14,-1)
-                tooltips('Edit channel 2')
+                tooltips('编辑 频道2')
             }
             togglebutton('channel3','3') {
                 channel('channel3')
                 desired(14,-1)
-                tooltips('Edit channel 3')
+                tooltips('编辑 频道3')
             }
             togglebutton('channel4','4') {
                 channel('channel4')
                 desired(14,-1)
-                tooltips('Edit channel 4')
+                tooltips('编辑 频道4')
             }
             togglebutton('channel5','5') {
                 channel('channel5')
                 desired(14,-1)
-                tooltips('Edit channel 5')
+                tooltips('编辑 频道5')
             }
             togglebutton('channel6','6') {
                 channel('channel6')
                 desired(14,-1)
-                tooltips('Edit channel 6')
+                tooltips('编辑 频道6')
             }
             togglebutton('channel7','7') {
                 channel('channel7')
                 desired(14,-1)
-                tooltips('Edit channel 7')
+                tooltips('编辑 频道7')
             }
             togglebutton('channel8','8') {
                 channel('channel8')
                 desired(14,-1)
-                tooltips('Edit channel 8')
+                tooltips('编辑 频道8')
             }
             spacing(0)
             horizmargin(0)
