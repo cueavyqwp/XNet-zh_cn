@@ -138,12 +138,12 @@ public class GuiRouter extends GenericGuiContainer<TileEntityRouter, GenericCont
 
         Panel panel2 = horizontal(0, 0).hint(0, 13, 160, 13)
                 .children(
-                        label("Pos").color(labelColor),
+                        label("方位").color(labelColor),
                         label(BlockPosTools.toString(controllerPos)));
 
         Panel panel3 = horizontal(0, 0).hint(0, 26, 160, 13)
                 .children(
-                        label("Index").color(labelColor),
+                        label("索引").color(labelColor),
                         label(index + " (" + type.getName() + ")"));
 
         panel.children(panel1, panel2, panel3);
