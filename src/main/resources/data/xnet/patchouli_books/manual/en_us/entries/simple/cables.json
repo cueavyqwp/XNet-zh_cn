@@ -1,12 +1,12 @@
 {
-  "name": "Cables",
+  "name": "线缆",
   "icon": "xnet:netcable_red",
   "category": "xnet:category_xnet_simple",
   "sortnum": 20,
   "pages": [
     {
       "type": "text",
-      "text": "There are four colored cables that don't interphere with each other"
+      "text": "这里一共有四种线缆,它们互不干扰"
     }
   ]
 }

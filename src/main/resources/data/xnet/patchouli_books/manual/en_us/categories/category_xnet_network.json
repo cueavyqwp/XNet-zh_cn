@@ -1,6 +1,6 @@
 {
-  "name": "Multiple Networks",
-  "description": "Connecting multiple networks with a Router",
+  "name": "多路网络",
+  "description": "用路由器连接多个网络",
   "parent": "xnet:category_xnet",
   "icon": "xnet:router",
   "sortnum": 20

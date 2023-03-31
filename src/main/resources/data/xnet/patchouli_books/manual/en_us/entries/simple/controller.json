@@ -1,12 +1,12 @@
 {
-  "name": "Controller",
+  "name": "控制器",
   "icon": "xnet:controller",
   "category": "xnet:category_xnet_simple",
   "sortnum": 10,
   "pages": [
     {
       "type": "text",
-      "text": "The Controller is the most important block of this mod. In this machine you control edit the different channels and define how items, liquids, or power move through those channels"
+      "text": "控制器是XNet中最重要的方块之一.在这台机器中,您可以控制编辑不同的频道,并定义那些 物品 流体 或 能量 如何通过这些管道去移动"
     }
   ]
 }

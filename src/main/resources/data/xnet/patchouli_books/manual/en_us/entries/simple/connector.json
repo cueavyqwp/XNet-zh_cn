@@ -1,12 +1,12 @@
 {
-  "name": "Connectors",
+  "name": "连接器",
   "icon": "xnet:connector_red",
   "category": "xnet:category_xnet_simple",
   "sortnum": 30,
   "pages": [
     {
       "type": "text",
-      "text": "To actually connect your cable to a block or machine you need a Connector"
+      "text": "您需要一个连接器把你的电缆连接到一个 模块 或 机器 上"
     }
   ]
 }
