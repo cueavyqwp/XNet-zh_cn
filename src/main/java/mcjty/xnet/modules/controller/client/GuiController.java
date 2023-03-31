@@ -317,25 +317,25 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
                     ChannelEditorPanel editor = new ChannelEditorPanel(channelEditPanel, minecraft, this, editingChannel);
                     editor.label("Channel " + (editingChannel + 1))
                             .shift(5)
-                            .toggle(TAG_ENABLED, "Enable processing on this channel", info.isEnabled())
+                            .toggle(TAG_ENABLED, "在这个通道上启用处理", info.isEnabled())
                             .shift(5)
-                            .text(TAG_NAME, "Channel name", info.getChannelName(), 65);
+                            .text(TAG_NAME, "频道名称", info.getChannelName(), 65);
                     info.getChannelSettings().createGui(editor);
 
                     Button remove = button(151, 1, 9, 10, "x")
                             .textOffset(0, -1)
-                            .tooltips("Remove this channel")
+                            .tooltips("移除此频道")
                             .event(this::removeChannel);
                     channelEditPanel.children(remove);
                     editor.setState(info.getChannelSettings());
 
                     Button copyChannel = button(134, 19, 25, 14, "C")
-                            .tooltips("Copy this channel to", "the clipboard")
+                            .tooltips("复制频道至", "剪切板")
                             .event(this::copyChannel);
                     channelEditPanel.children(copyChannel);
 
                     copyConnector = button(114, 19, 25, 14, "C")
-                            .tooltips("Copy this connector", "to the clipboard")
+                            .tooltips("复制此连接器", "至剪切板")
                             .event(this::copyConnector);
                     channelEditPanel.children(copyConnector);
 
