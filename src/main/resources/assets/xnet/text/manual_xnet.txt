@@ -1,8 +1,8 @@
-{b}XNet Manual
+{b}XNet 手册
 
-Table of Contents:
+目录:
 {l:intro}Introduction
-{l:basic}Basic Networking
+{l:basic}基础网络
 {l:advanced}Advanced Networking
 {l:types}Channel Types
 {l:netcolors}Network Colors
@@ -11,7 +11,7 @@ Table of Contents:
 {l:controller}Controller
 {l:router}Router
 {l:wirelessrouter}Wireless Router
-{l:proxy}Redstone Proxy
+{l:proxy}红石代理器
 
 {-------------------------------------------------------------}
 {b}Introduction

@@ -374,15 +374,15 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
         ask.children(label(title));
         Panel buttons = horizontal().desiredWidth(100).desiredHeight(18);
         if (okEvent != null) {
-            buttons.children(button("Cancel").event((() -> {
+            buttons.children(button("取消").event((() -> {
                 windowManager.closeWindow(askWindow);
             })));
-            buttons.children(button("OK").event(() -> {
+            buttons.children(button("完成").event(() -> {
                 windowManager.closeWindow(askWindow);
                 okEvent.buttonClicked();
             }));
         } else {
-            buttons.children(button("OK").event((() -> {
+            buttons.children(button("完成").event((() -> {
                 windowManager.closeWindow(askWindow);
             })));
         }

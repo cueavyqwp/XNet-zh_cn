@@ -184,3 +184,6 @@ curseforge {
     }
 }
 
+tasks.withType(JavaCompile) {  //使用UTF-8编码 防止中文出现乱码
+    options.encoding = "UTF-8"  
+}

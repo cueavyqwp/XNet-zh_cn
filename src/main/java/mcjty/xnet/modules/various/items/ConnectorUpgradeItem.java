@@ -43,9 +43,9 @@ public class ConnectorUpgradeItem extends Item {
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, @Nullable World worldIn, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new StringTextComponent(TextFormatting.BLUE + "Sneak right click this on a"));
-        tooltip.add(new StringTextComponent(TextFormatting.BLUE + "normal connector to upgrade it"));
-        tooltip.add(new StringTextComponent(TextFormatting.BLUE + "to an advanced connector"));
+        tooltip.add(new StringTextComponent(TextFormatting.BLUE + "对连接器潜行右键以将其升级"));
+        //用不着三行
+        //用不着三行
     }
 
     @Override
@@ -83,18 +83,18 @@ public class ConnectorUpgradeItem extends Item {
                     world.setBlock(pos, blockState, Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
                     player.inventory.removeItem(player.inventory.selected, 1);
                     player.containerMenu.broadcastChanges();
-                    player.displayClientMessage(new StringTextComponent(TextFormatting.GREEN + "Connector was upgraded"), false);
+                    player.displayClientMessage(new StringTextComponent(TextFormatting.GREEN + "连接器已升级"), false);
                 }
             }
             return ActionResultType.SUCCESS;
         } else if (block == CableModule.ADVANCED_CONNECTOR.get()) {
             if (!world.isClientSide) {
-                player.displayClientMessage(new StringTextComponent(TextFormatting.YELLOW + "This connector is already advanced!"), false);
+                player.displayClientMessage(new StringTextComponent(TextFormatting.YELLOW + "此连接器已经升过级了!"), false);
             }
             return ActionResultType.SUCCESS;
         } else {
             if (!world.isClientSide) {
-                player.displayClientMessage(new StringTextComponent(TextFormatting.RED + "Use this item on a connector to upgrade it!"), false);
+                player.displayClientMessage(new StringTextComponent(TextFormatting.RED + "使用其在连接器上以进行升级!"), false);
             }
             return ActionResultType.SUCCESS;
         }
