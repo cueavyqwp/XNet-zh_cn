@@ -1,7 +1,7 @@
 # XNet
 Advanced item/liquid/energy/... networking
 
-#汉化
+# 汉化
 
 由于`XNet`的部分翻译被写死到代码里了
 
