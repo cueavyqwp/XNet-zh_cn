@@ -35,11 +35,11 @@ public class FluidConnectorSettings extends AbstractConnectorSettings {
 
 
     public enum FluidMode {
-        INS,
-        EXT
+        输入,
+        输出
     }
 
-    private FluidMode fluidMode = FluidMode.INS;
+    private FluidMode fluidMode = FluidMode.输入;
 
     @Nullable private Integer priority = 0;
     @Nullable private Integer rate = null;
@@ -79,9 +79,9 @@ public class FluidConnectorSettings extends AbstractConnectorSettings {
     @Override
     public IndicatorIcon getIndicatorIcon() {
         switch (fluidMode) {
-            case INS:
+            case 输入:
                 return new IndicatorIcon(iconGuiElements, 0, 70, 13, 10);
-            case EXT:
+            case 输出:
                 return new IndicatorIcon(iconGuiElements, 13, 70, 13, 10);
         }
         return null;
@@ -114,13 +114,13 @@ public class FluidConnectorSettings extends AbstractConnectorSettings {
                 .choices(TAG_SPEED, "Number of ticks for each operation", Integer.toString(speed * 10), speeds)
                 .nl()
 
-                .label("Pri").integer(TAG_PRIORITY, "Insertion priority", priority, 36).nl()
+                .label("优先级").integer(TAG_PRIORITY, "Insertion priority", priority, 36).nl()
 
                 .label("Rate")
-                .integer(TAG_RATE, fluidMode == FluidMode.EXT ? "Fluid extraction rate|(max " + maxrate + "mb)" : "Fluid insertion rate|(max " + maxrate + "mb)", rate, 36, maxrate)
+                .integer(TAG_RATE, fluidMode == FluidMode.输出 ? "Fluid extraction rate|(max " + maxrate + "mb)" : "Fluid insertion rate|(max " + maxrate + "mb)", rate, 36, maxrate)
                 .shift(10)
-                .label(fluidMode == FluidMode.EXT ? "Min" : "Max")
-                .integer(TAG_MINMAX, fluidMode == FluidMode.EXT ? "Keep this amount of|fluid in tank" : "Disable insertion if|fluid level is too high", minmax, 36)
+                .label(fluidMode == FluidMode.输出 ? "Min" : "Max")
+                .integer(TAG_MINMAX, fluidMode == FluidMode.输出 ? "Keep this amount of|fluid in tank" : "Disable insertion if|fluid level is too high", minmax, 36)
                 .nl()
                 .label("Filter")
                 .ghostSlot(TAG_FILTER, filter);
@@ -131,7 +131,7 @@ public class FluidConnectorSettings extends AbstractConnectorSettings {
 
     @Override
     public boolean isEnabled(String tag) {
-        if (fluidMode == FluidMode.INS) {
+        if (fluidMode == FluidMode.输入) {
             if (tag.equals(TAG_FACING)) {
                 return advanced;
             }

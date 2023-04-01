@@ -45,11 +45,11 @@ public class ItemChannelSettings extends DefaultChannelSettings implements IChan
 
 
     public enum ChannelMode {
-        PRIORITY,
+        优先,
         ROUNDROBIN
     }
 
-    private ChannelMode channelMode = ChannelMode.PRIORITY;
+    private ChannelMode channelMode = ChannelMode.优先;
     private int delay = 0;
     private int roundRobinOffset = 0;
     private Map<ConsumerId, Integer> extractIndices = new HashMap<>();
@@ -278,7 +278,7 @@ public class ItemChannelSettings extends DefaultChannelSettings implements IChan
     // Returns what could not be inserted
     public int insertStackSimulate(@Nonnull List<Pair<SidedConsumer, ItemConnectorSettings>> inserted, @Nonnull IControllerContext context, @Nonnull ItemStack stack) {
         World world = context.getControllerWorld();
-        if (channelMode == ChannelMode.PRIORITY) {
+        if (channelMode == ChannelMode.优先) {
             roundRobinOffset = 0;       // Always start at 0
         }
         int total = stack.getCount();
@@ -514,7 +514,7 @@ public class ItemChannelSettings extends DefaultChannelSettings implements IChan
             Map<SidedConsumer, IConnectorSettings> connectors = context.getConnectors(channel);
             for (Map.Entry<SidedConsumer, IConnectorSettings> entry : connectors.entrySet()) {
                 ItemConnectorSettings con = (ItemConnectorSettings) entry.getValue();
-                if (con.getItemMode() == ItemConnectorSettings.ItemMode.EXT) {
+                if (con.getItemMode() == ItemConnectorSettings.ItemMode.输出) {
                     itemExtractors.put(entry.getKey(), con);
                 } else {
                     itemConsumers.add(Pair.of(entry.getKey(), con));
@@ -523,7 +523,7 @@ public class ItemChannelSettings extends DefaultChannelSettings implements IChan
             connectors = context.getRoutedConnectors(channel);
             for (Map.Entry<SidedConsumer, IConnectorSettings> entry : connectors.entrySet()) {
                 ItemConnectorSettings con = (ItemConnectorSettings) entry.getValue();
-                if (con.getItemMode() == ItemConnectorSettings.ItemMode.INS) {
+                if (con.getItemMode() == ItemConnectorSettings.ItemMode.输入) {
                     itemConsumers.add(Pair.of(entry.getKey(), con));
                 }
             }
@@ -557,7 +557,7 @@ public class ItemChannelSettings extends DefaultChannelSettings implements IChan
 
     @Override
     public void createGui(IEditorGui gui) {
-        gui.nl().choices(TAG_MODE, "Item distribution mode", channelMode, ChannelMode.values());
+        gui.nl().choices(TAG_MODE, "物品分发模式", channelMode, ChannelMode.values());
     }
 
     @Override
