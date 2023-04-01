@@ -194,9 +194,9 @@ public class ItemChannelSettings extends DefaultChannelSettings implements IChan
 
     private int getStartExtractIndex(ItemConnectorSettings settings, ConsumerId consumerId, IItemHandler handler) {
         switch (settings.getExtractMode()) {
-            case FIRST:
+            case 提取第一个:
                 return 0;
-            case RND: {
+            case 随机提取: {
                 if (handler.getSlots() <= 0) {
                     return 0;
                 }
@@ -219,7 +219,7 @@ public class ItemChannelSettings extends DefaultChannelSettings implements IChan
                 }
                 return slots.get(random.nextInt(slots.size()));
             }
-            case ORDER:
+            case 循环提取:
                 return getExtractIndex(consumerId);
         }
         return 0;

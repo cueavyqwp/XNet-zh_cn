@@ -337,7 +337,7 @@ public class FluidChannelSettings extends DefaultChannelSettings implements ICha
 
     @Override
     public void createGui(IEditorGui gui) {
-        gui.nl().choices(TAG_MODE, "Fluid distribution mode", channelMode, ChannelMode.values());
+        gui.nl().choices(TAG_MODE, "流体分配模式", channelMode, ChannelMode.values());
     }
 
     @Override

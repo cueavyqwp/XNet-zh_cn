@@ -54,13 +54,13 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
     }
 
     public enum ExtractMode {
-        FIRST,
-        RND,
-        ORDER
+        提取第一个,
+        随机提取,
+        循环提取
     }
 
     private ItemMode itemMode = ItemMode.输入;
-    private ExtractMode extractMode = ExtractMode.FIRST;
+    private ExtractMode extractMode = ExtractMode.提取第一个;
     private int speed = 2;
     private StackMode stackMode = StackMode.单个物品;
     private boolean tagsMode = false;
@@ -134,12 +134,12 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         gui
                 .label("优先级").integer(TAG_PRIORITY, "优先级越高就越先处理", priority, 36).shift(5)
                 .label("#")
-                .integer(TAG_COUNT, itemMode == ItemMode.输出 ? "Amount in destination inventory|to keep" : "Max amount in destination|inventory", count, 30);
+                .integer(TAG_COUNT, itemMode == ItemMode.输出 ? "当还剩多少物品时停止" : "当达到多少物品时停止", count, 30);
 
         if (itemMode == ItemMode.输出) {
             gui
                     .shift(5)
-                    .choices(TAG_EXTRACT, "Extract mode (first available,|random slot or round robin)", extractMode, ExtractMode.values());
+                    .choices(TAG_EXTRACT, "提取模式 (提取第一个 随机提取 或 循环提取)", extractMode, ExtractMode.values());
         }
 
         gui
@@ -254,7 +254,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         itemMode = ItemMode.valueOf(((String)data.get(TAG_MODE)).toUpperCase());
         Object emode = data.get(TAG_EXTRACT);
         if (emode == null) {
-            extractMode = ExtractMode.FIRST;
+            extractMode = ExtractMode.提取第一个;
         } else {
             extractMode = ExtractMode.valueOf(((String) emode).toUpperCase());
         }

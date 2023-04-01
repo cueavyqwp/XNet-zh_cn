@@ -76,13 +76,13 @@ public class EnergyConnectorSettings extends AbstractConnectorSettings {
 
                 .label("优先级").integer(TAG_PRIORITY, "优先级越高就越先处理", priority, 30).nl()
 
-                .label("Rate")
+                .label("速率")
                 .integer(TAG_RATE,
-                        (energyMode == EnergyMode.输出 ? "Max energy extraction rate" : "Max energy insertion rate") +
-                        "|(limited to " + (advanced ? Config.maxRfRateAdvanced.get() : Config.maxRfRateNormal.get()) + " per tick)", rate, 40)
+                        (energyMode == EnergyMode.输出 ? "最大能量输出率" : "最大能量获取率") +
+                        "|(限定 " + (advanced ? Config.maxRfRateAdvanced.get() : Config.maxRfRateNormal.get()) + " 每游戏刻)", rate, 40)
                 .shift(10)
-                .label(energyMode == EnergyMode.输出 ? "Min" : "Max")
-                .integer(TAG_MINMAX, energyMode == EnergyMode.输出 ? "Disable extraction if energy|is too low" : "Disable insertion if energy|is too high", minmax, 50);
+                .label(energyMode == EnergyMode.输出 ? "最少" : "最多")
+                .integer(TAG_MINMAX, energyMode == EnergyMode.输出 ? "当低于多少能量时停止" : "当高于多少能量时停止", minmax, 50);
     }
 
     private static final Set<String> INSERT_TAGS = ImmutableSet.of(TAG_MODE, TAG_RS, TAG_COLOR+"0", TAG_COLOR+"1", TAG_COLOR+"2", TAG_COLOR+"3", TAG_RATE, TAG_MINMAX, TAG_PRIORITY);

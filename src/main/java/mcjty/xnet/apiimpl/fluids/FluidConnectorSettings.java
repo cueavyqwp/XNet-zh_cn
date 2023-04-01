@@ -116,7 +116,7 @@ public class FluidConnectorSettings extends AbstractConnectorSettings {
 
                 .label("优先级").integer(TAG_PRIORITY, "优先级越高就越先处理", priority, 36).nl()
 
-                .label("速度")
+                .label("速率")
                 .integer(TAG_RATE, fluidMode == FluidMode.输出 ? "流体提取速率|(最大 " + maxrate + "mb)" : "流体输入速率|(最大 " + maxrate + "mb)", rate, 36, maxrate)
                 .shift(10)
                 .label(fluidMode == FluidMode.输出 ? "最少" : "最多")
