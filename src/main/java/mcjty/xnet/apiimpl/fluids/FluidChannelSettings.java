@@ -40,10 +40,10 @@ public class FluidChannelSettings extends DefaultChannelSettings implements ICha
 
     public enum ChannelMode {
         优先,
-        分发
+        轮流
     }
 
-    private ChannelMode channelMode = ChannelMode.分发;
+    private ChannelMode channelMode = ChannelMode.轮流;
     private int delay = 0;
     private int roundRobinOffset = 0;
 

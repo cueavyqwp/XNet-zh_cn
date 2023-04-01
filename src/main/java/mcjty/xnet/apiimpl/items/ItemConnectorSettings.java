@@ -48,9 +48,9 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
     }
 
     public enum StackMode {
-        SINGLE,
-        STACK,
-        COUNT
+        单个物品,
+        一组物品,
+        指定数量
     }
 
     public enum ExtractMode {
@@ -62,7 +62,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
     private ItemMode itemMode = ItemMode.输入;
     private ExtractMode extractMode = ExtractMode.FIRST;
     private int speed = 2;
-    private StackMode stackMode = StackMode.SINGLE;
+    private StackMode stackMode = StackMode.单个物品;
     private boolean tagsMode = false;
     private boolean metaMode = false;
     private boolean nbtMode = false;
@@ -121,7 +121,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
                 .shift(5)
                 .choices(TAG_STACK, "单个物品 一组物品 或 指定数量", stackMode, StackMode.values());
 
-        if (stackMode == StackMode.COUNT && itemMode == ItemMode.输出) {
+        if (stackMode == StackMode.指定数量 && itemMode == ItemMode.输出) {
             gui
                     .integer(TAG_EXTRACT_AMOUNT, "每个操作要提取的项数", extractAmount, 30, 64);
         }
@@ -132,7 +132,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
                 .nl();
 
         gui
-                .label("优先级").integer(TAG_PRIORITY, "插入优先级", priority, 36).shift(5)
+                .label("优先级").integer(TAG_PRIORITY, "优先级越高就越先处理", priority, 36).shift(5)
                 .label("#")
                 .integer(TAG_COUNT, itemMode == ItemMode.输出 ? "Amount in destination inventory|to keep" : "Max amount in destination|inventory", count, 30);
 

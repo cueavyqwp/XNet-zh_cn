@@ -34,13 +34,13 @@ public class RFToolsSupport {
         }
         int cnt = 0;
         switch (settings.getStackMode()) {
-            case SINGLE:
+            case 单个物品:
                 cnt = 1;
                 break;
-            case STACK:
+            case 一组物品:
                 cnt = 64;
                 break;
-            case COUNT:
+            case 指定数量:
                 cnt = settings.getExtractAmount();
                 break;
         }

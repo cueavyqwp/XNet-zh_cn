@@ -623,11 +623,11 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
             if (!name.isEmpty()) {
                 br.tooltips(TextFormatting.GREEN + "名称: " + TextFormatting.WHITE + name,
                         TextFormatting.GREEN + "方块: " + TextFormatting.WHITE + blockName,
-                        TextFormatting.GREEN + "方位: " + TextFormatting.WHITE + BlockPosTools.toString(coordinate),
+                        TextFormatting.GREEN + "位置方位: " + TextFormatting.WHITE + BlockPosTools.toString(coordinate),
                         TextFormatting.GRAY + "<双击显示位置>");
             } else {
                 br.tooltips(TextFormatting.GREEN + "方块: " + TextFormatting.WHITE + blockName,
-                        TextFormatting.GREEN + "方位: " + TextFormatting.WHITE + BlockPosTools.toString(coordinate),
+                        TextFormatting.GREEN + "位置: " + TextFormatting.WHITE + BlockPosTools.toString(coordinate),
                         TextFormatting.GRAY + "<双击显示位置>");
             }
 

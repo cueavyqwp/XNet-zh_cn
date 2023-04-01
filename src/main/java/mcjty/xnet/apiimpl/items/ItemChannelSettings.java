@@ -46,7 +46,7 @@ public class ItemChannelSettings extends DefaultChannelSettings implements IChan
 
     public enum ChannelMode {
         优先,
-        ROUNDROBIN
+        轮流
     }
 
     private ChannelMode channelMode = ChannelMode.优先;
@@ -485,13 +485,13 @@ public class ItemChannelSettings extends DefaultChannelSettings implements IChan
             if (!stack.isEmpty()) {
                 int s = 0;
                 switch (stackMode) {
-                    case SINGLE:
+                    case 单个物品:
                         s = 1;
                         break;
-                    case STACK:
+                    case 一组物品:
                         s = stack.getMaxStackSize();
                         break;
-                    case COUNT:
+                    case 指定数量:
                         s = extractAmount;
                         break;
                 }

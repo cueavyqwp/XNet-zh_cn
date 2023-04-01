@@ -35,10 +35,10 @@ public class Sensor {
 
 
     public enum SensorMode {
-        OFF,
-        ITEM,
-        FLUID,
-        ENERGY,
+        关闭,
+        物品,
+        流体,
+        能量,
         RS
     }
 
@@ -86,7 +86,7 @@ public class Sensor {
 
     private final int index;
 
-    private SensorMode sensorMode = SensorMode.OFF;
+    private SensorMode sensorMode = SensorMode.关闭;
     private Operator operator = Operator.EQUAL;
     private int amount = 0;
     private Color outputColor = OFF;
@@ -150,7 +150,7 @@ public class Sensor {
             return true;
         }
         if ((TAG_STACK + index).equals(tag)) {
-            return sensorMode == SensorMode.FLUID || sensorMode == SensorMode.ITEM;
+            return sensorMode == SensorMode.流体 || sensorMode == SensorMode.物品;
         }
         return false;
     }
@@ -167,7 +167,7 @@ public class Sensor {
 
     public boolean test(@Nullable TileEntity te, @Nonnull World world, @Nonnull BlockPos pos, LogicConnectorSettings settings) {
         switch (sensorMode) {
-            case ITEM: {
+            case 物品: {
                 if (RFToolsSupport.isStorageScanner(te)) {
                     int cnt = RFToolsSupport.countItems(te, filter, amount + 1);
                     return operator.match(cnt, amount);
@@ -178,13 +178,13 @@ public class Sensor {
                     }).orElse(false);
                 }
             }
-            case FLUID: {
+            case 流体: {
                 return FluidChannelSettings.getFluidHandlerAt(te, settings.getFacing()).map(h -> {
                     int cnt = countFluid(h, filter, amount + 1);
                     return operator.match(cnt, amount);
                 }).orElse(false);
             }
-            case ENERGY: {
+            case 能量: {
                 if (EnergyChannelSettings.isEnergyTE(te, settings.getFacing())) {
                     int cnt = EnergyChannelSettings.getEnergyLevel(te, settings.getFacing());
                     return operator.match(cnt, amount);
@@ -195,7 +195,7 @@ public class Sensor {
                 int cnt = world.getSignal(pos, settings.getFacing());
                 return operator.match(cnt, amount);
             }
-            case OFF:
+            case 关闭:
             default:
                 break;
         }
@@ -216,7 +216,7 @@ public class Sensor {
         if (sm != null) {
             sensorMode = SensorMode.valueOf(((String) sm).toUpperCase());
         } else {
-            sensorMode = SensorMode.OFF;
+            sensorMode = SensorMode.关闭;
         }
         Object op = data.get(TAG_OPERATOR + index);
         if (op != null) {

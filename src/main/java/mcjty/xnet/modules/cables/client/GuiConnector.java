@@ -54,7 +54,7 @@ public class GuiConnector extends GenericGuiContainer<ConnectorTileEntity, Gener
         toplevel.children(namePanel);
 
         Panel togglePanel = horizontal().
-                children(label("方位:"));
+                children(label("位置:"));
         for (Direction facing : OrientationTools.DIRECTION_VALUES) {
             toggleButtons[facing.ordinal()] = new ToggleButton().text(facing.getSerializedName().substring(0, 1).toUpperCase())
                 .event(() -> {
