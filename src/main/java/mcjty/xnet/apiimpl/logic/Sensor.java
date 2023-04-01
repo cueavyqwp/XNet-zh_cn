@@ -158,7 +158,7 @@ public class Sensor {
     public void createGui(IEditorGui gui) {
         gui
                 .choices(TAG_MODE + index, "模式", sensorMode, SensorMode.values())
-                .choices(TAG_OPERATOR + index, "运算符", operator, Operator.values())
+                .choices(TAG_OPERATOR + index, "= != < > <= >=", operator, Operator.values())
                 .integer(TAG_AMOUNT + index, "要比较的数据", amount, 46)
                 .colors(TAG_COLOR + index, "输出颜色", outputColor.getColor(), COLORS)
                 .ghostSlot(TAG_STACK + index, filter)

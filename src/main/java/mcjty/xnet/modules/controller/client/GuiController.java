@@ -161,7 +161,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
         ConnectedBlockClientInfo c = tileEntity.clientConnectedBlocks.get(index);
         if (c != null) {
             RFToolsBase.instance.clientInfo.hilightBlock(c.getPos().getPos(), System.currentTimeMillis() + 1000 * 5);
-            Logging.message(minecraft.player, "现在选中的方块已高亮显示");
+            Logging.message(minecraft.player, "方块已高亮显示");
             minecraft.player.closeContainer();
         }
     }
@@ -432,7 +432,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
             String json = Minecraft.getInstance().keyboardHandler.getClipboard();
             int max = Config.controllerMaxPaste.get();
             if (max >= 0 && json.length() > max) {
-                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "Clipboard too large!");
+                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "剪贴板过大!");
                 return;
             }
             JsonParser parser = new JsonParser();
@@ -440,7 +440,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
             String type = root.get("type").getAsString();
             IChannelType channelType = XNet.xNetApi.findType(type);
             if (channelType == null) {
-                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "Unsupported channel type: " + type + "!");
+                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "不支持的通道类型: " + type + "!");
                 return;
             }
 
@@ -468,7 +468,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
             String json = Minecraft.getInstance().keyboardHandler.getClipboard();
             int max = Config.controllerMaxPaste.get();
             if (max >= 0 && json.length() > max) {
-                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "Clipboard too large!");
+                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "剪贴板过大!");
                 return;
             }
             JsonParser parser = new JsonParser();
@@ -476,7 +476,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
             String type = root.get("type").getAsString();
             IChannelType channelType = XNet.xNetApi.findType(type);
             if (channelType == null) {
-                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "Unsupported channel type: " + type + "!");
+                showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "不支持的通道类型: " + type + "!");
                 return;
             }
             PacketServerCommandTyped packet = new PacketServerCommandTyped(tileEntity.getBlockPos(), tileEntity.getDimension(), CMD_PASTECHANNEL.getName(), TypedMap.builder()

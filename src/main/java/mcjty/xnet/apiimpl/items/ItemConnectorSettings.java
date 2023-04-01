@@ -117,7 +117,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         colorsGui(gui);
         redstoneGui(gui);
         gui.nl()
-                .choices(TAG_MODE, "模式选择", itemMode, ItemMode.values())
+                .choices(TAG_MODE, "输出模式 或 输入模式", itemMode, ItemMode.values())
                 .shift(5)
                 .choices(TAG_STACK, "单个物品 一组物品 或 指定数量", stackMode, StackMode.values());
 

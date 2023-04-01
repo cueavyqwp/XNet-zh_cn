@@ -71,10 +71,10 @@ public class EnergyConnectorSettings extends AbstractConnectorSettings {
         colorsGui(gui);
         redstoneGui(gui);
         gui.nl()
-                .choices(TAG_MODE, "Insert or extract mode", energyMode, EnergyMode.values())
+                .choices(TAG_MODE, "输出模式 或 输入模式", energyMode, EnergyMode.values())
                 .nl()
 
-                .label("优先级").integer(TAG_PRIORITY, "Insertion priority", priority, 30).nl()
+                .label("优先级").integer(TAG_PRIORITY, "优先级越高就越先处理", priority, 30).nl()
 
                 .label("Rate")
                 .integer(TAG_RATE,

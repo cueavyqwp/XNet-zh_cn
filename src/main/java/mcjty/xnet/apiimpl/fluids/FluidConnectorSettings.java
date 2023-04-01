@@ -110,19 +110,19 @@ public class FluidConnectorSettings extends AbstractConnectorSettings {
         colorsGui(gui);
         redstoneGui(gui);
         gui.nl()
-                .choices(TAG_MODE, "Insert or extract mode", fluidMode, FluidMode.values())
-                .choices(TAG_SPEED, "Number of ticks for each operation", Integer.toString(speed * 10), speeds)
+                .choices(TAG_MODE, "输出模式 或 输入模式", fluidMode, FluidMode.values())
+                .choices(TAG_SPEED, "每个操作所需的游戏刻", Integer.toString(speed * 10), speeds)
                 .nl()
 
-                .label("优先级").integer(TAG_PRIORITY, "Insertion priority", priority, 36).nl()
+                .label("优先级").integer(TAG_PRIORITY, "优先级越高就越先处理", priority, 36).nl()
 
-                .label("Rate")
-                .integer(TAG_RATE, fluidMode == FluidMode.输出 ? "Fluid extraction rate|(max " + maxrate + "mb)" : "Fluid insertion rate|(max " + maxrate + "mb)", rate, 36, maxrate)
+                .label("速度")
+                .integer(TAG_RATE, fluidMode == FluidMode.输出 ? "流体提取速率|(最大 " + maxrate + "mb)" : "流体输入速率|(最大 " + maxrate + "mb)", rate, 36, maxrate)
                 .shift(10)
-                .label(fluidMode == FluidMode.输出 ? "Min" : "Max")
-                .integer(TAG_MINMAX, fluidMode == FluidMode.输出 ? "Keep this amount of|fluid in tank" : "Disable insertion if|fluid level is too high", minmax, 36)
+                .label(fluidMode == FluidMode.输出 ? "最少" : "最多")
+                .integer(TAG_MINMAX, fluidMode == FluidMode.输出 ? "当还剩多少流体时停止" : "当达到多少流体时停止", minmax, 36)
                 .nl()
-                .label("Filter")
+                .label("过滤")
                 .ghostSlot(TAG_FILTER, filter);
     }
 
