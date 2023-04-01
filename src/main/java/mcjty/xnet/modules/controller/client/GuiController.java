@@ -221,14 +221,14 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
                 if (getSelectedChannel() != -1) {
                     copyConnector();
                 } else {
-                    showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "Nothing selected!");
+                    showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "无选中的!");
                 }
                 return true;
             } else if (keyCode == GLFW.GLFW_KEY_V) {
                 if (getSelectedChannel() != -1) {
                     pasteConnector();
                 } else {
-                    showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "Nothing selected!");
+                    showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "无选中的!");
                 }
                 return true;
             }
@@ -248,13 +248,15 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
     }
 
     private void removeConnector(SidedPos sidedPos) {
+            showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.RED + "是否移除此连接器?", () -> { //原本没有 不知道是不是BUG
         sendServerCommandTyped(XNetMessages.INSTANCE, TileEntityController.CMD_REMOVECONNECTOR,
                 TypedMap.builder()
                         .put(PARAM_CHANNEL, getSelectedChannel())
                         .put(PARAM_POS, sidedPos.getPos())
                         .put(PARAM_SIDE, sidedPos.getSide().ordinal())
                         .build());
-        refresh();
+            refresh();
+        });
     }
 
     private void createConnector(SidedPos sidedPos) {
@@ -390,7 +392,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
     }
 
     private void copyConnector() {
-        showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.GREEN + "已保存至剪贴板");//原本没有 不知道是不是BUG
+        showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.GREEN + "已保存");//原本没有 不知道是不是BUG
         if (editingConnector != null) {
             sendServerCommandTyped(XNetMessages.INSTANCE, TileEntityController.CMD_COPYCONNECTOR,
                     TypedMap.builder()
@@ -403,7 +405,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
 
 
     private void copyChannel() {
-        showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.GREEN + "已保存至剪贴板");
+        showMessage(minecraft, this, getWindowManager(), 50, 50, TextFormatting.GREEN + "已保存");
         sendServerCommandTyped(XNetMessages.INSTANCE, TileEntityController.CMD_COPYCHANNEL,
                 TypedMap.builder()
                         .put(PARAM_INDEX, getSelectedChannel())
@@ -527,7 +529,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
 
                     Button remove = button(151, 1, 9, 10, "x")
                             .textOffset(0, -1)
-                            .tooltips("删除此连接器")
+                            .tooltips("移除此连接器")
                             .event(() -> removeConnector(editingConnector));
 
                     ConnectorEditorPanel editor = new ConnectorEditorPanel(connectorEditPanel, minecraft, this, editingChannel, editingConnector);
@@ -619,14 +621,14 @@ public class GuiController extends GenericGuiContainer<TileEntityController, Gen
             br.userObject("block");
             panel.children(br);
             if (!name.isEmpty()) {
-                br.tooltips(TextFormatting.GREEN + "连接器: " + TextFormatting.WHITE + name,
+                br.tooltips(TextFormatting.GREEN + "名称: " + TextFormatting.WHITE + name,
                         TextFormatting.GREEN + "方块: " + TextFormatting.WHITE + blockName,
                         TextFormatting.GREEN + "方位: " + TextFormatting.WHITE + BlockPosTools.toString(coordinate),
-                        TextFormatting.WHITE + "<双击显示位置>");
+                        TextFormatting.GRAY + "<双击显示位置>");
             } else {
                 br.tooltips(TextFormatting.GREEN + "方块: " + TextFormatting.WHITE + blockName,
                         TextFormatting.GREEN + "方位: " + TextFormatting.WHITE + BlockPosTools.toString(coordinate),
-                        TextFormatting.WHITE + "<双击显示位置>");
+                        TextFormatting.GRAY + "<双击显示位置>");
             }
 
             panel.children(label(sidedPos.getSide().getSerializedName().substring(0, 1).toUpperCase()).color(color).desiredWidth(18));

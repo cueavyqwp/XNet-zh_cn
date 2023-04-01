@@ -20,6 +20,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -74,7 +75,7 @@ public class FacadeBlockItem extends BlockItem implements ITooltipSettings {
         PlayerEntity player = context.getPlayer();
         setMimicBlock(item, mimicBlock);
         if (world.isClientSide) {
-            player.displayClientMessage(new StringTextComponent("Facade is now mimicking " + mimicBlock.getBlock().getDescriptionId()), false);
+            player.displayClientMessage(new StringTextComponent(TextFormatting.GREEN + "伪装器现在伪装 " + mimicBlock.getBlock().getDescriptionId()), false);
         }
     }
 

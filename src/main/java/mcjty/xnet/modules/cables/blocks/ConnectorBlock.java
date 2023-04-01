@@ -100,7 +100,7 @@ public class ConnectorBlock extends GenericCableBlock implements ITooltipSetting
                     @Override
                     @Nonnull
                     public ITextComponent getDisplayName() {
-                        return new StringTextComponent("Connector");
+                        return new StringTextComponent("连接器");
                     }
 
                     @Nonnull
