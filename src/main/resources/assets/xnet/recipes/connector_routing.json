@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "xnet:connector",
+    "data": 4
+  },
+  "pattern": [
+    "rrr",
+    "xMx",
+    "rrr"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "x": {
+      "item": "minecraft:gold_nugget"
+    },
+    "M": {
+      "item": "xnet:connector",
+      "data": 0
+    }
+  }
+}

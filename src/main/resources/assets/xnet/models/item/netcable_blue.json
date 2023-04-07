@@ -1,6 +1,0 @@
-{
-  "parent": "xnet:block/smallblock",
-  "textures": {
-    "all": "xnet:block/cable0/normal_none_netcable"
-  }
-}

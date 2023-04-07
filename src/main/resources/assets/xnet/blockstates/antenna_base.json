@@ -1,7 +1,15 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "custom": { "flip-v": true },
+    "model": "xnet:antenna_base.obj"
+  },
   "variants": {
-    "": {
-      "model": "xnet:block/antenna_base"
-    }
+    "normal": [{}],
+    "inventory": [{
+      "transform": { }
+    }]
   }
 }

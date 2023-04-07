@@ -1,7 +1,7 @@
-package mcjty.rftoolsbase.api.control.code;
+package mcjty.rftoolscontrol.api.code;
 
-import mcjty.rftoolsbase.api.control.machines.IProcessor;
-import mcjty.rftoolsbase.api.control.machines.IProgram;
+import mcjty.rftoolscontrol.api.machines.IProcessor;
+import mcjty.rftoolscontrol.api.machines.IProgram;
 
 public interface IFunctionRunnable {
     Object run(IProcessor processor, IProgram program);

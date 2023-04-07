@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "xnet:advanced_connector",
+    "data": 0
+  },
+  "pattern": [
+    "ce",
+    "dr"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "c": {
+      "item": "xnet:connector",
+      "data": 0
+    },
+    "d": {
+      "item": "minecraft:diamond"
+    },
+    "e": {
+      "item": "minecraft:ender_pearl"
+    }
+  }
+}

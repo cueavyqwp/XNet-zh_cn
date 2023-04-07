@@ -1,6 +1,0 @@
-{
-  "parent": "xnet:block/mediumblock",
-  "textures": {
-    "all": "xnet:block/cable4/connector"
-  }
-}

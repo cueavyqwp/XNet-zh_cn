@@ -1,19 +1,35 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "custom": { "flip-v": true },
+    "model": "xnet:antenna_dish.obj"
+  },
   "variants": {
-    "facing=north": {
-      "model": "xnet:block/antenna_dish"
-    },
-    "facing=south": {
-      "model": "xnet:block/antenna_dish",
-      "y": 180
-    },
-    "facing=west": {
-      "model": "xnet:block/antenna_dish",
-      "y": 270
-    },
-    "facing=east": {
-      "model": "xnet:block/antenna_dish",
-      "y": 90
+    "normal": [{}],
+    "inventory": [{
+      "transform": {
+        "gui": {
+          "scale": 0.65,
+          "rotation": [ { "x": 15 }, { "y": 45 } ]
+        },
+        "ground": {
+          "scale": 0.45
+        },
+        "firstperson": {
+          "scale": 0.45
+        },
+        "thirdperson": {
+          "scale": 0.45
+        }
+      }
+    }],
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "west": {"y": 270},
+      "east": {"y": 90}
     }
   }
 }

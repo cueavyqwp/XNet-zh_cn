@@ -1,11 +1,11 @@
-package mcjty.rftoolsbase.api.control.machines;
+package mcjty.rftoolscontrol.api.machines;
 
-import mcjty.rftoolsbase.api.control.code.ICompiledOpcode;
-import mcjty.rftoolsbase.api.control.code.IOpcodeRunnable;
-import mcjty.rftoolsbase.api.control.parameters.BlockSide;
-import mcjty.rftoolsbase.api.control.parameters.Inventory;
-import mcjty.rftoolsbase.api.control.parameters.Parameter;
-import mcjty.rftoolsbase.api.control.parameters.Tuple;
+import mcjty.rftoolscontrol.api.code.ICompiledOpcode;
+import mcjty.rftoolscontrol.api.code.IOpcodeRunnable;
+import mcjty.rftoolscontrol.api.parameters.BlockSide;
+import mcjty.rftoolscontrol.api.parameters.Inventory;
+import mcjty.rftoolscontrol.api.parameters.Parameter;
+import mcjty.rftoolscontrol.api.parameters.Tuple;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

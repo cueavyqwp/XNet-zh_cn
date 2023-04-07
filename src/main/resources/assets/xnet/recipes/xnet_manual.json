@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "xnet:xnet_manual"
+  },
+  "pattern": [
+    "rsr",
+    " b ",
+    "r r"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "b": {
+      "item": "minecraft:book"
+    },
+    "s": {
+      "item": "minecraft:string"
+    }
+  }
+}

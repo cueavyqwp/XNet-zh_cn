@@ -1,32 +1,32 @@
 package mcjty.xnet.apiimpl.items;
 
 import mcjty.lib.varia.ItemStackList;
-import mcjty.lib.varia.ItemStackTools;
 import mcjty.xnet.compat.ForestrySupport;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ItemFilterCache {
     private boolean matchDamage = true;
-    private boolean tagsMode = false;
+    private boolean oredictMode = false;
     private boolean blacklistMode = true;
     private boolean nbtMode = false;
     private ItemStackList stacks;
-    private Set<ResourceLocation> tagMatches = new HashSet<>();
+    private Set<Integer> oredictMatches = new HashSet<>();
 
-    public ItemFilterCache(boolean matchDamage, boolean tagsMode, boolean blacklistMode, boolean nbtMode, @Nonnull ItemStackList stacks) {
+    public ItemFilterCache(boolean matchDamage, boolean oredictMode, boolean blacklistMode, boolean nbtMode, @Nonnull ItemStackList stacks) {
         this.matchDamage = matchDamage;
-        this.tagsMode = tagsMode;
+        this.oredictMode = oredictMode;
         this.blacklistMode = blacklistMode;
         this.nbtMode = nbtMode;
         this.stacks = stacks;
         for (ItemStack s : stacks) {
-            ItemStackTools.addCommonTags(s.getItem().getTags(), tagMatches);
+            for (int id : OreDictionary.getOreIDs(s)) {
+                oredictMatches.add(id);
+            }
         }
     }
 
@@ -34,13 +34,16 @@ public class ItemFilterCache {
         if (!stack.isEmpty()) {
             boolean match = false;
 
-            if (tagsMode) {
-                Set<ResourceLocation> tags = stack.getItem().getTags();
-                if (tags.isEmpty()) {
+            if (oredictMode) {
+                int[] oreIDs = OreDictionary.getOreIDs(stack);
+                if (oreIDs.length == 0) {
                     match = itemMatches(stack);
                 } else {
-                    if (!Collections.disjoint(tagMatches, tags)) {
-                        match = true;
+                    for (int id : oreIDs) {
+                        if (oredictMatches.contains(id)) {
+                            match = true;
+                            break;
+                        }
                     }
                 }
             } else {
@@ -59,17 +62,17 @@ public class ItemFilterCache {
                 cleanedStack = ForestrySupport.sanitize(stack, forestryFlags);
             }
             for (ItemStack itemStack : stacks) {
-                if (matchDamage && itemStack.getDamageValue() != stack.getDamageValue()) {
+                if (matchDamage && itemStack.getMetadata() != stack.getMetadata()) {
                     continue;
                 }
                 if (nbtMode) {
                     if((cleanedStack != null) && ForestrySupport.isBreedable(itemStack)) {
                         ItemStack cleanedItemStack = ForestrySupport.sanitize(itemStack, forestryFlags);
-                        if(!ItemStack.tagMatches(cleanedItemStack, cleanedStack)) {
+                        if(!ItemStack.areItemStackTagsEqual(cleanedItemStack, cleanedStack)) {
                     		continue;
                     	}
                     }
-                    else if(!ItemStack.tagMatches(itemStack, stack)) {
+                    else if(!ItemStack.areItemStackTagsEqual(itemStack, stack)) {
                         continue;
                     }
                 }

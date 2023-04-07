@@ -1,6 +1,6 @@
 package mcjty.xnet.multiblock;
 
-import net.minecraft.util.Direction;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 
@@ -32,7 +32,7 @@ public class IntPos {
         return getX() == 0 || getX() == 15 || getZ() == 0 || getZ() == 15;
     }
 
-    public boolean isBorder(Direction facing) {
+    public boolean isBorder(EnumFacing facing) {
         switch (facing) {
             case DOWN:
             case UP:
@@ -49,7 +49,7 @@ public class IntPos {
         return false;
     }
 
-    public IntPos otherSide(Direction facing) {
+    public IntPos otherSide(EnumFacing facing) {
         switch (facing) {
             case DOWN:
             case UP:
@@ -148,7 +148,6 @@ public class IntPos {
         int dx = getX();
         int dy = getY();
         int dz = getZ();
-        return new BlockPos((cpos.x << 4) + dx, dy, (cpos.z << 4) + dz);
-//        return cpos.getBlock(dx, dy, dz);
+        return cpos.getBlock(dx, dy, dz);
     }
 }

@@ -2,21 +2,21 @@ package mcjty.xnet.apiimpl.energy;
 
 import com.google.gson.JsonObject;
 import mcjty.lib.varia.EnergyTools;
-import mcjty.lib.varia.LevelTools;
-import mcjty.rftoolsbase.api.xnet.channels.IChannelSettings;
-import mcjty.rftoolsbase.api.xnet.channels.IConnectorSettings;
-import mcjty.rftoolsbase.api.xnet.channels.IControllerContext;
-import mcjty.rftoolsbase.api.xnet.gui.IEditorGui;
-import mcjty.rftoolsbase.api.xnet.gui.IndicatorIcon;
-import mcjty.rftoolsbase.api.xnet.helper.DefaultChannelSettings;
-import mcjty.rftoolsbase.api.xnet.keys.SidedConsumer;
+import mcjty.lib.varia.WorldTools;
 import mcjty.xnet.XNet;
-import mcjty.xnet.modules.cables.blocks.ConnectorBlock;
-import mcjty.xnet.modules.cables.blocks.ConnectorTileEntity;
-import mcjty.xnet.setup.Config;
-import net.minecraft.nbt.CompoundNBT;
+import mcjty.xnet.api.channels.IChannelSettings;
+import mcjty.xnet.api.channels.IConnectorSettings;
+import mcjty.xnet.api.channels.IControllerContext;
+import mcjty.xnet.api.gui.IEditorGui;
+import mcjty.xnet.api.gui.IndicatorIcon;
+import mcjty.xnet.api.helper.DefaultChannelSettings;
+import mcjty.xnet.api.keys.SidedConsumer;
+import mcjty.xnet.blocks.cables.ConnectorBlock;
+import mcjty.xnet.blocks.cables.ConnectorTileEntity;
+import mcjty.xnet.config.ConfigSetup;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -41,7 +41,8 @@ public class EnergyChannelSettings extends DefaultChannelSettings implements ICh
 
     @Override
     public JsonObject writeToJson() {
-        return new JsonObject();
+        JsonObject object = new JsonObject();
+        return object;
     }
 
     @Override
@@ -50,11 +51,11 @@ public class EnergyChannelSettings extends DefaultChannelSettings implements ICh
 
 
     @Override
-    public void readFromNBT(CompoundNBT tag) {
+    public void readFromNBT(NBTTagCompound tag) {
     }
 
     @Override
-    public void writeToNBT(CompoundNBT tag) {
+    public void writeToNBT(NBTTagCompound tag) {
     }
 
     @Override
@@ -79,17 +80,17 @@ public class EnergyChannelSettings extends DefaultChannelSettings implements ICh
             BlockPos connectorPos = context.findConsumerPosition(entry.getKey().getConsumerId());
             if (connectorPos != null) {
 
-                Direction side = entry.getKey().getSide();
-                BlockPos energyPos = connectorPos.relative(side);
-                if (!LevelTools.isLoaded(world, energyPos)) {
+                EnumFacing side = entry.getKey().getSide();
+                BlockPos energyPos = connectorPos.offset(side);
+                if (!WorldTools.chunkLoaded(world, energyPos)) {
                     continue;
                 }
 
-                TileEntity te = world.getBlockEntity(energyPos);
+                TileEntity te = world.getTileEntity(energyPos);
                 // @todo report error somewhere?
                 if (isEnergyTE(te, side.getOpposite())) {
                     EnergyConnectorSettings settings = entry.getValue();
-                    ConnectorTileEntity connectorTE = (ConnectorTileEntity) world.getBlockEntity(connectorPos);
+                    ConnectorTileEntity connectorTE = (ConnectorTileEntity) world.getTileEntity(connectorPos);
 
                     if (checkRedstone(world, settings, connectorPos)) {
                         continue;
@@ -109,7 +110,7 @@ public class EnergyChannelSettings extends DefaultChannelSettings implements ICh
                     Integer rate = settings.getRate();
                     if (rate == null) {
                         boolean advanced = ConnectorBlock.isAdvancedConnector(world, connectorPos);
-                        rate = advanced ? Config.maxRfRateAdvanced.get() : Config.maxRfRateNormal.get();
+                        rate = advanced ? ConfigSetup.maxRfRateAdvanced.get() : ConfigSetup.maxRfRateNormal.get();
                     }
                     connectorTE.setEnergyInputFrom(side, rate);
 
@@ -136,7 +137,7 @@ public class EnergyChannelSettings extends DefaultChannelSettings implements ICh
             return;
         }
 
-        if (!context.checkAndConsumeRF(Config.controllerOperationRFT.get())) {
+        if (!context.checkAndConsumeRF(ConfigSetup.controllerOperationRFT.get())) {
             // Not enough energy for this operation
             return;
         }
@@ -168,12 +169,12 @@ public class EnergyChannelSettings extends DefaultChannelSettings implements ICh
             EnergyConnectorSettings settings = entry.getValue();
             BlockPos extractorPos = context.findConsumerPosition(entry.getKey().getConsumerId());
             if (extractorPos != null) {
-                Direction side = entry.getKey().getSide();
-                BlockPos pos = extractorPos.relative(side);
-                if (!LevelTools.isLoaded(world, pos)) {
+                EnumFacing side = entry.getKey().getSide();
+                BlockPos pos = extractorPos.offset(side);
+                if (!WorldTools.chunkLoaded(world, pos)) {
                     continue;
                 }
-                TileEntity te = world.getBlockEntity(pos);
+                TileEntity te = world.getTileEntity(pos);
                 // @todo report error somewhere?
                 if (isEnergyTE(te, settings.getFacing())) {
 
@@ -195,7 +196,7 @@ public class EnergyChannelSettings extends DefaultChannelSettings implements ICh
                     Integer rate = settings.getRate();
                     if (rate == null) {
                         boolean advanced = ConnectorBlock.isAdvancedConnector(world, extractorPos);
-                        rate = advanced ? Config.maxRfRateAdvanced.get() : Config.maxRfRateNormal.get();
+                        rate = advanced ? ConfigSetup.maxRfRateAdvanced.get() : ConfigSetup.maxRfRateNormal.get();
                     }
                     int totransfer = Math.min(rate, energy);
                     long e = EnergyTools.receiveEnergy(te, settings.getFacing(), totransfer);
@@ -211,16 +212,17 @@ public class EnergyChannelSettings extends DefaultChannelSettings implements ICh
     }
 
 
-    public static boolean isEnergyTE(@Nullable TileEntity te, @Nonnull Direction side) {
+    public static boolean isEnergyTE(@Nullable TileEntity te, @Nonnull EnumFacing side) {
         if (te == null) {
             return false;
         }
-        return te.getCapability(CapabilityEnergy.ENERGY, side).isPresent();
+        return te.hasCapability(CapabilityEnergy.ENERGY, side);
     }
 
-    public static int getEnergyLevel(TileEntity tileEntity, @Nonnull Direction side) {
-        if (tileEntity != null) {
-            return tileEntity.getCapability(CapabilityEnergy.ENERGY, side).map(IEnergyStorage::getEnergyStored).orElse(0);
+    public static int getEnergyLevel(TileEntity tileEntity, @Nonnull EnumFacing side) {
+        if (tileEntity != null && tileEntity.hasCapability(CapabilityEnergy.ENERGY, side)) {
+            IEnergyStorage energy = tileEntity.getCapability(CapabilityEnergy.ENERGY, side);
+            return energy.getEnergyStored();
         } else {
             return 0;
         }
@@ -241,7 +243,7 @@ public class EnergyChannelSettings extends DefaultChannelSettings implements ICh
             Map<SidedConsumer, IConnectorSettings> connectors = context.getConnectors(channel);
             for (Map.Entry<SidedConsumer, IConnectorSettings> entry : connectors.entrySet()) {
                 EnergyConnectorSettings con = (EnergyConnectorSettings) entry.getValue();
-                if (con.getEnergyMode() == EnergyConnectorSettings.EnergyMode.输出) {
+                if (con.getEnergyMode() == EnergyConnectorSettings.EnergyMode.EXT) {
                     energyExtractors.add(Pair.of(entry.getKey(), con));
                 } else {
                     energyConsumers.add(Pair.of(entry.getKey(), con));
@@ -251,7 +253,7 @@ public class EnergyChannelSettings extends DefaultChannelSettings implements ICh
             connectors = context.getRoutedConnectors(channel);
             for (Map.Entry<SidedConsumer, IConnectorSettings> entry : connectors.entrySet()) {
                 EnergyConnectorSettings con = (EnergyConnectorSettings) entry.getValue();
-                if (con.getEnergyMode() == EnergyConnectorSettings.EnergyMode.输入) {
+                if (con.getEnergyMode() == EnergyConnectorSettings.EnergyMode.INS) {
                     energyConsumers.add(Pair.of(entry.getKey(), con));
                 }
             }

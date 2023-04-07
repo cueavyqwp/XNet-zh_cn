@@ -1,0 +1,28 @@
+{
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "rftools"
+      }
+    }
+  ],
+  "result": {
+    "item": "xnet:redstone_proxy"
+  },
+  "pattern": [
+    "rrr",
+    "rmr",
+    "rrr"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "m": {
+      "item": "minecraft:iron_block"
+    }
+  }
+}

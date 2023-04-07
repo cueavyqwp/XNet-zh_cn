@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "xnet:netcable",
+    "data": 4,
+    "count": 32
+  },
+  "pattern": [
+    "srs",
+    "rgr",
+    "srs"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "r": {
+      "item": "minecraft:redstone_block"
+    },
+    "s": {
+      "item": "minecraft:string"
+    },
+    "g": {
+      "item": "minecraft:gold_ingot"
+    }
+  }
+}

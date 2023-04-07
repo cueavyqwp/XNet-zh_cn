@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "xnet:redstone_proxy_upd"
+  },
+  "pattern": [
+    "mr",
+    "  "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "r": {
+      "item": "minecraft:redstone_torch"
+    },
+    "m": {
+      "item": "xnet:redstone_proxy"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 package mcjty.xnet.multiblock;
 
-import mcjty.rftoolsbase.api.xnet.keys.NetworkId;
+import mcjty.xnet.api.keys.NetworkId;
 
 import javax.annotation.Nullable;
 import java.util.Collection;

@@ -1,6 +1,6 @@
-package mcjty.rftoolsbase.api.control.registry;
+package mcjty.rftoolscontrol.api.registry;
 
-import mcjty.rftoolsbase.api.control.code.Function;
+import mcjty.rftoolscontrol.api.code.Function;
 
 public interface IFunctionRegistry {
 

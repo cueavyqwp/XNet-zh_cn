@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "xnet:antenna"
+  },
+  "pattern": [
+    "BiB",
+    "BiB",
+    " i "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:iron_bars"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    }
+  }
+}

@@ -1,5 +1,7 @@
 package mcjty.xnet.apiimpl;
 
+import mcjty.xnet.api.channels.Color;
+import mcjty.xnet.api.channels.RSMode;
 import mcjty.xnet.apiimpl.energy.EnergyConnectorSettings;
 import mcjty.xnet.apiimpl.fluids.FluidChannelSettings;
 import mcjty.xnet.apiimpl.fluids.FluidConnectorSettings;
@@ -14,6 +16,8 @@ import java.util.Map;
 
 public class EnumStringTranslators {
 
+    private static Map<String, RSMode> rsModeMap;
+    private static Map<String, Color> colorMap;
     private static Map<String, ItemConnectorSettings.ItemMode> itemModeMap;
     private static Map<String, ItemConnectorSettings.ExtractMode> extractModeMap;
     private static Map<String, ItemConnectorSettings.StackMode> stackModeMap;
@@ -100,6 +104,28 @@ public class EnumStringTranslators {
             }
         }
         return itemChannelModeMap.get(mode);
+    }
+
+    @Nullable
+    public static RSMode getRSMode(String mode) {
+        if (rsModeMap == null) {
+            rsModeMap = new HashMap<>();
+            for (RSMode value : RSMode.values()) {
+                rsModeMap.put(value.name(), value);
+            }
+        }
+        return rsModeMap.get(mode);
+    }
+
+    @Nullable
+    public static Color getColor(String color) {
+        if (colorMap == null) {
+            colorMap = new HashMap<>();
+            for (Color value : Color.values()) {
+                colorMap.put(value.name(), value);
+            }
+        }
+        return colorMap.get(color);
     }
 
     @Nullable

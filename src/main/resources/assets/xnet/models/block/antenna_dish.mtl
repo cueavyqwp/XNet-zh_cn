@@ -6,11 +6,11 @@ Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
 d 1.000000
 
-map_Kd xnet:block/antenna_dish
+map_Kd xnet:blocks/antenna_dish
 
 newmtl Material_antenna.png
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
 d 1.000000
 
-map_Kd xnet:block/antenna
+map_Kd xnet:blocks/antenna

@@ -1,19 +1,19 @@
 package mcjty.xnet.apiimpl.logic;
 
 import com.google.gson.JsonObject;
-import mcjty.lib.varia.LevelTools;
-import mcjty.rftoolsbase.api.xnet.channels.IChannelSettings;
-import mcjty.rftoolsbase.api.xnet.channels.IConnectorSettings;
-import mcjty.rftoolsbase.api.xnet.channels.IControllerContext;
-import mcjty.rftoolsbase.api.xnet.gui.IEditorGui;
-import mcjty.rftoolsbase.api.xnet.gui.IndicatorIcon;
-import mcjty.rftoolsbase.api.xnet.helper.DefaultChannelSettings;
-import mcjty.rftoolsbase.api.xnet.keys.SidedConsumer;
+import mcjty.lib.varia.WorldTools;
 import mcjty.xnet.XNet;
-import mcjty.xnet.modules.cables.blocks.ConnectorTileEntity;
-import net.minecraft.nbt.CompoundNBT;
+import mcjty.xnet.api.channels.IChannelSettings;
+import mcjty.xnet.api.channels.IConnectorSettings;
+import mcjty.xnet.api.channels.IControllerContext;
+import mcjty.xnet.api.gui.IEditorGui;
+import mcjty.xnet.api.gui.IndicatorIcon;
+import mcjty.xnet.api.helper.DefaultChannelSettings;
+import mcjty.xnet.api.keys.SidedConsumer;
+import mcjty.xnet.blocks.cables.ConnectorTileEntity;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -35,7 +35,8 @@ public class LogicChannelSettings extends DefaultChannelSettings implements ICha
 
     @Override
     public JsonObject writeToJson() {
-        return new JsonObject();
+        JsonObject object = new JsonObject();
+        return object;
     }
 
     @Override
@@ -44,15 +45,15 @@ public class LogicChannelSettings extends DefaultChannelSettings implements ICha
 
 
     @Override
-    public void readFromNBT(CompoundNBT tag) {
-        delay = tag.getInt("delay");
-        colors = tag.getInt("colors");
+    public void readFromNBT(NBTTagCompound tag) {
+        delay = tag.getInteger("delay");
+        colors = tag.getInteger("colors");
     }
 
     @Override
-    public void writeToNBT(CompoundNBT tag) {
-        tag.putInt("delay", delay);
-        tag.putInt("colors", colors);
+    public void writeToNBT(NBTTagCompound tag) {
+        tag.setInteger("delay", delay);
+        tag.setInteger("colors", colors);
     }
 
     @Override
@@ -84,9 +85,9 @@ public class LogicChannelSettings extends DefaultChannelSettings implements ICha
             int sensorColors = 0;
             BlockPos connectorPos = context.findConsumerPosition(entry.getKey().getConsumerId());
             if (connectorPos != null) {
-                Direction side = entry.getKey().getSide();
-                BlockPos pos = connectorPos.relative(side);
-                if (!LevelTools.isLoaded(world, pos)) {
+                EnumFacing side = entry.getKey().getSide();
+                BlockPos pos = connectorPos.offset(side);
+                if (!WorldTools.chunkLoaded(world, pos)) {
                     // If it is not chunkloaded we just use the color settings as we last remembered it
                     colors |= settings.getColorMask();
                     continue;
@@ -101,7 +102,7 @@ public class LogicChannelSettings extends DefaultChannelSettings implements ICha
 
                 // If sense is false the sensor is disabled which means the colors from it will also be disabled
                 if (sense) {
-                    TileEntity te = world.getBlockEntity(pos);
+                    TileEntity te = world.getTileEntity(pos);
 
                     for (Sensor sensor : settings.getSensors()) {
                         if (sensor.test(te, world, pos, settings)) {
@@ -122,12 +123,12 @@ public class LogicChannelSettings extends DefaultChannelSettings implements ICha
 
             BlockPos connectorPos = context.findConsumerPosition(entry.getKey().getConsumerId());
             if (connectorPos != null) {
-                Direction side = entry.getKey().getSide();
-                if (!LevelTools.isLoaded(world, connectorPos)) {
+                EnumFacing side = entry.getKey().getSide();
+                if (!WorldTools.chunkLoaded(world, connectorPos)) {
                     continue;
                 }
 
-                TileEntity te = world.getBlockEntity(connectorPos);
+                TileEntity te = world.getTileEntity(connectorPos);
                 if (te instanceof ConnectorTileEntity) {
                     ConnectorTileEntity connectorTE = (ConnectorTileEntity) te;
                     int powerOut;
@@ -151,7 +152,7 @@ public class LogicChannelSettings extends DefaultChannelSettings implements ICha
             Map<SidedConsumer, IConnectorSettings> connectors = context.getConnectors(channel);
             for (Map.Entry<SidedConsumer, IConnectorSettings> entry : connectors.entrySet()) {
                 LogicConnectorSettings con = (LogicConnectorSettings) entry.getValue();
-                if (con.getLogicMode() == LogicConnectorSettings.LogicMode.检测模式) {
+                if (con.getLogicMode() == LogicConnectorSettings.LogicMode.SENSOR) {
                     sensors.add(Pair.of(entry.getKey(), con));
                 } else {
                     outputs.add(Pair.of(entry.getKey(), con));
@@ -161,7 +162,7 @@ public class LogicChannelSettings extends DefaultChannelSettings implements ICha
             connectors = context.getRoutedConnectors(channel);
             for (Map.Entry<SidedConsumer, IConnectorSettings> entry : connectors.entrySet()) {
                 LogicConnectorSettings con = (LogicConnectorSettings) entry.getValue();
-                if (con.getLogicMode() == LogicConnectorSettings.LogicMode.红石模式) {
+                if (con.getLogicMode() == LogicConnectorSettings.LogicMode.OUTPUT) {
                     outputs.add(Pair.of(entry.getKey(), con));
                 }
             }

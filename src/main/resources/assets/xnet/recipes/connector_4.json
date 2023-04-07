@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "xnet:connector",
+    "data": 0
+  },
+  "type": "forge:ore_shapeless",
+  "ingredients": [
+    {
+      "type": "xnet:basic_connector"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "dyeBlue"
+    }
+  ]
+}

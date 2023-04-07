@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "xnet:facade",
+    "count": 16
+  },
+  "pattern": [
+    "pwp",
+    "wXw",
+    "pwp"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "p": {
+      "item": "minecraft:paper"
+    },
+    "w": {
+      "item": "minecraft:wool",
+      "data": 0
+    },
+    "X": {
+      "item": "minecraft:glass"
+    }
+  }
+}

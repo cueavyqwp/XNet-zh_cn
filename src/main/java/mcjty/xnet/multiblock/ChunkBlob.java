@@ -1,14 +1,13 @@
 package mcjty.xnet.multiblock;
 
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.rftoolsbase.api.xnet.keys.ConsumerId;
-import mcjty.rftoolsbase.api.xnet.keys.NetworkId;
-import mcjty.xnet.modules.cables.CableModule;
-import mcjty.xnet.modules.controller.ControllerModule;
-import mcjty.xnet.modules.facade.FacadeModule;
+import mcjty.xnet.api.keys.ConsumerId;
+import mcjty.xnet.api.keys.NetworkId;
+import mcjty.xnet.blocks.cables.NetCableSetup;
+import mcjty.xnet.init.ModBlocks;
 import net.minecraft.block.Block;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.IntArrayNBT;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -86,7 +85,11 @@ public class ChunkBlob {
     @Nonnull
     public Set<NetworkId> getNetworksForPosition(IntPos pos) {
         BlobId blobId = blobAllocations.get(pos);
-        return networkMappings.getOrDefault(blobId, Collections.emptySet());
+        if (networkMappings.containsKey(blobId)) {
+            return networkMappings.get(blobId);
+        } else {
+            return Collections.emptySet();
+        }
     }
 
     @Nonnull
@@ -150,7 +153,11 @@ public class ChunkBlob {
                 }
             }
         }
-        return cachedConsumers.getOrDefault(network, Collections.emptySet());
+        if (cachedConsumers.containsKey(network)) {
+            return cachedConsumers.get(network);
+        } else {
+            return Collections.emptySet();
+        }
     }
 
     public void check(World world) {
@@ -158,10 +165,9 @@ public class ChunkBlob {
         for (int cx = 0 ; cx < 16 ; cx++) {
             for (int cz = 0 ; cz < 16 ; cz++) {
                 for (int cy = 0 ; cy < 256 ; cy++) {
-                    BlockPos pos = new BlockPos((chunkPos.x << 4) + cx, cy, (chunkPos.z << 4) + cz);
-//                    BlockPos pos = chunkPos.getBlock(cx, cy, cz);
+                    BlockPos pos = chunkPos.getBlock(cx, cy, cz);
                     Block block = world.getBlockState(pos).getBlock();
-                    boolean hasid = block == CableModule.CONNECTOR.get() || block == CableModule.ADVANCED_CONNECTOR.get() || block == CableModule.NETCABLE.get() || block == ControllerModule.CONTROLLER.get() || block == FacadeModule.FACADE.get();
+                    boolean hasid = block == NetCableSetup.connectorBlock || block == NetCableSetup.advancedConnectorBlock || block == NetCableSetup.netCableBlock || block == ModBlocks.controllerBlock || block == ModBlocks.facadeBlock;
                     if (hasid != blobAllocations.containsKey(new IntPos(pos))) {
                         if (hasid) {
                             System.out.println("Allocation at " + BlockPosTools.toString(pos) + " but no cable there!");
@@ -386,7 +392,7 @@ public class ChunkBlob {
         }
     }
 
-    public void readFromNBT(CompoundNBT compound) {
+    public void readFromNBT(NBTTagCompound compound) {
         networkMappings.clear();
         blobAllocations.clear();
         networkProviders.clear();
@@ -396,9 +402,9 @@ public class ChunkBlob {
         cachedConsumers = null;
         cachedProviders = null;
 
-        lastBlobId = compound.getInt("lastBlob");
+        lastBlobId = compound.getInteger("lastBlob");
         Set<BlobId> foundBlobs = new HashSet<>();       // Keep track of blobs we found
-        if (compound.contains("allocations")) {
+        if (compound.hasKey("allocations")) {
             int[] allocations = compound.getIntArray("allocations");
             int idx = 0;
             while (idx < allocations.length-1) {
@@ -413,7 +419,7 @@ public class ChunkBlob {
             }
         }
 
-        if (compound.contains("mappings")) {
+        if (compound.hasKey("mappings")) {
             int[] mappings = compound.getIntArray("mappings");
             int idx = 0;
             while (idx < mappings.length-1) {
@@ -433,7 +439,7 @@ public class ChunkBlob {
             }
         }
 
-        if (compound.contains("providers")) {
+        if (compound.hasKey("providers")) {
             int[] providers = compound.getIntArray("providers");
             int idx = 0;
             while (idx < providers.length-1) {
@@ -442,7 +448,7 @@ public class ChunkBlob {
             }
         }
 
-        if (compound.contains("consumers")) {
+        if (compound.hasKey("consumers")) {
             int[] consumers = compound.getIntArray("consumers");
             int idx = 0;
             while (idx < consumers.length-1) {
@@ -454,7 +460,7 @@ public class ChunkBlob {
             }
         }
 
-        if (compound.contains("colors")) {
+        if (compound.hasKey("colors")) {
             int[] colors = compound.getIntArray("colors");
             int idx = 0;
             while (idx < colors.length-1) {
@@ -469,8 +475,8 @@ public class ChunkBlob {
         }
     }
 
-    public CompoundNBT writeToNBT(CompoundNBT compound) {
-        compound.putInt("lastBlob", lastBlobId);
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        compound.setInteger("lastBlob", lastBlobId);
 
         List<Integer> m = new ArrayList<>();
         for (Map.Entry<BlobId, Set<NetworkId>> entry : networkMappings.entrySet()) {
@@ -480,40 +486,40 @@ public class ChunkBlob {
             }
             m.add(-1);
         }
-        IntArrayNBT mappings = new IntArrayNBT(m.stream().mapToInt(i -> i).toArray());
-        compound.put("mappings", mappings);
+        NBTTagIntArray mappings = new NBTTagIntArray(m.stream().mapToInt(i -> i).toArray());
+        compound.setTag("mappings", mappings);
 
         m.clear();
         for (Map.Entry<IntPos, BlobId> entry : blobAllocations.entrySet()) {
             m.add(entry.getKey().getPos());
             m.add(entry.getValue().getId());
         }
-        IntArrayNBT allocations = new IntArrayNBT(m.stream().mapToInt(i -> i).toArray());
-        compound.put("allocations", allocations);
+        NBTTagIntArray allocations = new NBTTagIntArray(m.stream().mapToInt(i -> i).toArray());
+        compound.setTag("allocations", allocations);
 
         m.clear();
         for (Map.Entry<IntPos, NetworkId> entry : networkProviders.entrySet()) {
             m.add(entry.getKey().getPos());
             m.add(entry.getValue().getId());
         }
-        IntArrayNBT providers = new IntArrayNBT(m.stream().mapToInt(i -> i).toArray());
-        compound.put("providers", providers);
+        NBTTagIntArray providers = new NBTTagIntArray(m.stream().mapToInt(i -> i).toArray());
+        compound.setTag("providers", providers);
 
         m.clear();
         for (Map.Entry<IntPos, ConsumerId> entry : networkConsumers.entrySet()) {
             m.add(entry.getKey().getPos());
             m.add(entry.getValue().getId());
         }
-        IntArrayNBT consumers = new IntArrayNBT(m.stream().mapToInt(i -> i).toArray());
-        compound.put("consumers", consumers);
+        NBTTagIntArray consumers = new NBTTagIntArray(m.stream().mapToInt(i -> i).toArray());
+        compound.setTag("consumers", consumers);
 
         m.clear();
         for (Map.Entry<BlobId, ColorId> entry : blobColors.entrySet()) {
             m.add(entry.getKey().getId());
             m.add(entry.getValue().getId());
         }
-        IntArrayNBT colors = new IntArrayNBT(m.stream().mapToInt(i -> i).toArray());
-        compound.put("colors", colors);
+        NBTTagIntArray colors = new NBTTagIntArray(m.stream().mapToInt(i -> i).toArray());
+        compound.setTag("colors", colors);
 
         return compound;
     }

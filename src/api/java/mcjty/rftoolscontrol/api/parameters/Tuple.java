@@ -1,4 +1,4 @@
-package mcjty.rftoolsbase.api.control.parameters;
+package mcjty.rftoolscontrol.api.parameters;
 
 public class Tuple {
     private final int x;

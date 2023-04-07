@@ -1,11 +1,11 @@
 package mcjty.xnet.compat;
 
-import mcjty.rftoolsbase.api.storage.IStorageScanner;
-import mcjty.rftoolsbase.api.xnet.channels.IControllerContext;
-import mcjty.rftoolsbase.api.xnet.keys.SidedConsumer;
+import mcjty.rftools.api.storage.IStorageScanner;
+import mcjty.xnet.api.channels.IControllerContext;
+import mcjty.xnet.api.keys.SidedConsumer;
 import mcjty.xnet.apiimpl.items.ItemChannelSettings;
 import mcjty.xnet.apiimpl.items.ItemConnectorSettings;
-import mcjty.xnet.setup.Config;
+import mcjty.xnet.config.ConfigSetup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import org.apache.commons.lang3.tuple.Pair;
@@ -22,7 +22,7 @@ public class RFToolsSupport {
 
     public static void tickStorageScanner(IControllerContext context, ItemConnectorSettings settings, TileEntity te, ItemChannelSettings channelSettings) {
         IStorageScanner scanner = (IStorageScanner) te;
-        Predicate<ItemStack> extractMatcher = settings.getMatcher(context);
+        Predicate<ItemStack> extractMatcher = settings.getMatcher();
 
         Integer count = settings.getCount();
         int amount = 0;
@@ -34,13 +34,13 @@ public class RFToolsSupport {
         }
         int cnt = 0;
         switch (settings.getStackMode()) {
-            case 单个物品:
+            case SINGLE:
                 cnt = 1;
                 break;
-            case 一组物品:
+            case STACK:
                 cnt = 64;
                 break;
-            case 指定数量:
+            case COUNT:
                 cnt = settings.getExtractAmount();
                 break;
         }
@@ -67,7 +67,7 @@ public class RFToolsSupport {
             List<Pair<SidedConsumer, ItemConnectorSettings>> inserted = new ArrayList<>();
             int remaining = channelSettings.insertStackSimulate(inserted, context, stack);
             if (!inserted.isEmpty()) {
-                if (context.checkAndConsumeRF(Config.controllerOperationRFT.get())) {
+                if (context.checkAndConsumeRF(ConfigSetup.controllerOperationRFT.get())) {
                     channelSettings.insertStackReal(context, inserted, scanner.requestItem(extractMatcher, false, toextract - remaining, true));
                 }
             }
@@ -81,7 +81,7 @@ public class RFToolsSupport {
 
     public static int countItems(TileEntity te, ItemStack stack, int count) {
         IStorageScanner scanner = (IStorageScanner) te;
-        return scanner.countItems(stack, true, count);
+        return scanner.countItems(stack, true, true, count);
     }
 
     public static ItemStack insertItem(TileEntity te, ItemStack stack, boolean simulate) {

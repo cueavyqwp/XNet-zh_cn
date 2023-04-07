@@ -1,6 +1,0 @@
-{
-  "parent": "block/cube",
-  "loader": "forge:obj",
-  "model": "xnet:models/block/antenna_base.obj",
-  "flip-v": true
-}

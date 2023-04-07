@@ -1,4 +1,4 @@
-package mcjty.rftoolsbase.api.control.code;
+package mcjty.rftoolscontrol.api.code;
 
 public enum OpcodeOutput {
     NONE,

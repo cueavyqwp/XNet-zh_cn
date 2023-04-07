@@ -1,6 +1,6 @@
-package mcjty.rftoolsbase.api.control.parameters;
+package mcjty.rftoolscontrol.api.parameters;
 
-import mcjty.rftoolsbase.api.control.code.Function;
+import mcjty.rftoolscontrol.api.code.Function;
 
 /**
  * A value for a parameter. This value can only be

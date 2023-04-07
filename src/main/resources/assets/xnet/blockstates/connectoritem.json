@@ -1,15 +1,15 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "xnet:block/connector"
+    "model": "xnet:connector"
   },
   "variants": {
     "color": {
-      "blue": { "textures": { "txt": "xnet:block/cable0/connector" }},
-      "red": { "textures": { "txt": "xnet:block/cable1/connector" }},
-      "yellow": { "textures": { "txt": "xnet:block/cable2/connector" }},
-      "green": { "textures": { "txt": "xnet:block/cable3/connector" }},
-      "routing": { "textures": { "txt": "xnet:block/cable4/connector" }}
+      "blue": { "textures": { "txt": "xnet:blocks/cable0/connector" }},
+      "red": { "textures": { "txt": "xnet:blocks/cable1/connector" }},
+      "yellow": { "textures": { "txt": "xnet:blocks/cable2/connector" }},
+      "green": { "textures": { "txt": "xnet:blocks/cable3/connector" }},
+      "routing": { "textures": { "txt": "xnet:blocks/cable4/connector" }}
     }
   }
 }

@@ -4,16 +4,15 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import mcjty.lib.varia.ItemStackList;
-import mcjty.lib.varia.JSonTools;
-import mcjty.rftoolsbase.api.xnet.channels.IControllerContext;
-import mcjty.rftoolsbase.api.xnet.gui.IEditorGui;
-import mcjty.rftoolsbase.api.xnet.gui.IndicatorIcon;
-import mcjty.rftoolsbase.api.xnet.helper.AbstractConnectorSettings;
+import mcjty.lib.varia.ItemStackTools;
 import mcjty.xnet.XNet;
+import mcjty.xnet.api.gui.IEditorGui;
+import mcjty.xnet.api.gui.IndicatorIcon;
+import mcjty.xnet.api.helper.AbstractConnectorSettings;
 import mcjty.xnet.apiimpl.EnumStringTranslators;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -31,48 +30,45 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
     public static final String TAG_EXTRACT_AMOUNT = "extract_amount";
     public static final String TAG_SPEED = "speed";
     public static final String TAG_EXTRACT = "extract";
-    public static final String TAG_TAGS = "od";
+    public static final String TAG_OREDICT = "od";
     public static final String TAG_NBT = "nbt";
     public static final String TAG_META = "meta";
     public static final String TAG_PRIORITY = "priority";
     public static final String TAG_COUNT = "count";
     public static final String TAG_FILTER = "flt";
-    public static final String TAG_FILTER_IDX = "fltIdx";
     public static final String TAG_BLACKLIST = "blacklist";
 
     public static final int FILTER_SIZE = 18;
 
     public enum ItemMode {
-        输入,
-        输出
+        INS,
+        EXT
     }
 
     public enum StackMode {
-        单个物品,
-        一组物品,
-        指定数量
+        SINGLE,
+        STACK,
+        COUNT
     }
 
     public enum ExtractMode {
-        提取第一个,
-        随机提取,
-        循环提取
+        FIRST,
+        RND,
+        ORDER
     }
 
-    private ItemMode itemMode = ItemMode.输入;
-    private ExtractMode extractMode = ExtractMode.提取第一个;
+    private ItemMode itemMode = ItemMode.INS;
+    private ExtractMode extractMode = ExtractMode.FIRST;
     private int speed = 2;
-    private StackMode stackMode = StackMode.单个物品;
-    private boolean tagsMode = false;
+    private StackMode stackMode = StackMode.SINGLE;
+    private boolean oredictMode = false;
     private boolean metaMode = false;
     private boolean nbtMode = false;
     private boolean blacklist = false;
     @Nullable private Integer priority = 0;
     @Nullable private Integer count = null;
     @Nullable private Integer extractAmount = null;
-
     private ItemStackList filters = ItemStackList.create(FILTER_SIZE);
-    private int filterIndex = -1;
 
     // Cached matcher for items
     private Predicate<ItemStack> matcher = null;
@@ -81,7 +77,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         return itemMode;
     }
 
-    public ItemConnectorSettings(@Nonnull Direction side) {
+    public ItemConnectorSettings(@Nonnull EnumFacing side) {
         super(side);
     }
 
@@ -89,9 +85,9 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
     @Override
     public IndicatorIcon getIndicatorIcon() {
         switch (itemMode) {
-            case 输入:
+            case INS:
                 return new IndicatorIcon(iconGuiElements, 0, 70, 13, 10);
-            case 输出:
+            case EXT:
                 return new IndicatorIcon(iconGuiElements, 13, 70, 13, 10);
         }
         return null;
@@ -117,54 +113,45 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         colorsGui(gui);
         redstoneGui(gui);
         gui.nl()
-                .choices(TAG_MODE, "输出模式 或 输入模式", itemMode, ItemMode.values())
+                .choices(TAG_MODE, "Insert or extract mode", itemMode, ItemMode.values())
                 .shift(5)
-                .choices(TAG_STACK, "单个物品 一组物品 或 指定数量", stackMode, StackMode.values());
+                .choices(TAG_STACK, "Single item, stack, or count", stackMode, StackMode.values());
 
-        if (stackMode == StackMode.指定数量 && itemMode == ItemMode.输出) {
+        if (stackMode == StackMode.COUNT && itemMode == ItemMode.EXT) {
             gui
-                    .integer(TAG_EXTRACT_AMOUNT, "每个操作要提取的项数", extractAmount, 30, 64);
+                    .integer(TAG_EXTRACT_AMOUNT, "Amount of items to extract|per operation", extractAmount, 30, 64);
         }
 
         gui
                 .shift(10)
-                .choices(TAG_SPEED, "每个操作所需的游戏刻", Integer.toString(speed * 5), speeds)
+                .choices(TAG_SPEED, "Number of ticks for each operation", Integer.toString(speed * 5), speeds)
                 .nl();
 
         gui
-                .label("优先级").integer(TAG_PRIORITY, "优先级越高就越先处理", priority, 36).shift(5)
+                .label("Pri").integer(TAG_PRIORITY, "Insertion priority", priority, 36).shift(5)
                 .label("#")
-                .integer(TAG_COUNT, itemMode == ItemMode.输出 ? "当还剩多少物品时停止" : "当达到多少物品时停止", count, 30);
+                .integer(TAG_COUNT, itemMode == ItemMode.EXT ? "Amount in destination inventory|to keep" : "Max amount in destination|inventory", count, 30);
 
-        if (itemMode == ItemMode.输出) {
+        if (itemMode == ItemMode.EXT) {
             gui
                     .shift(5)
-                    .choices(TAG_EXTRACT, "提取模式 (提取第一个 随机提取 或 循环提取)", extractMode, ExtractMode.values());
+                    .choices(TAG_EXTRACT, "Extract mode (first available,|random slot or round robin)", extractMode, ExtractMode.values());
         }
 
         gui
                 .nl()
 
-                .toggleText(TAG_BLACKLIST, "启用黑名单", "黑名单", blacklist).shift(0)
-                .toggleText(TAG_TAGS, "标签匹配", "标签", tagsMode).shift(0)
-                .toggleText(TAG_META, "元数据匹配", "元数据", metaMode).shift(0)
-                .toggleText(TAG_NBT, "NBT匹配", "NBT", nbtMode).shift(0)
-                .choices(TAG_FILTER_IDX, "过滤索引", getFilterIndexString(), "关闭", "1", "2", "3", "4")
+                .toggleText(TAG_BLACKLIST, "Enable blacklist mode", "BL", blacklist).shift(2)
+                .toggleText(TAG_OREDICT, "Ore dictionary matching", "Ore", oredictMode).shift(2)
+                .toggleText(TAG_META, "Metadata matching", "Meta", metaMode).shift(2)
+                .toggleText(TAG_NBT, "NBT matching", "NBT", nbtMode)
                 .nl();
         for (int i = 0 ; i < FILTER_SIZE ; i++) {
             gui.ghostSlot(TAG_FILTER + i, filters.get(i));
         }
     }
 
-    private String getFilterIndexString() {
-        if (filterIndex == -1) {
-            return "关闭";
-        } else {
-            return Integer.toString(filterIndex);
-        }
-    }
-
-    public Predicate<ItemStack> getMatcher(IControllerContext context) {
+    public Predicate<ItemStack> getMatcher() {
         if (matcher == null) {
             ItemStackList filterList = ItemStackList.create();
             for (ItemStack stack : filters) {
@@ -172,31 +159,14 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
                     filterList.add(stack);
                 }
             }
-            Predicate<ItemStack> filterMatcher = getIndexFilterMatcher(context);
             if (filterList.isEmpty()) {
-                if (filterMatcher != null) {
-                    matcher = filterMatcher;
-                } else {
-                    matcher = itemStack -> true;
-                }
+                matcher = itemStack -> true;
             } else {
-                ItemFilterCache filterCache = new ItemFilterCache(metaMode, tagsMode, blacklist, nbtMode, filterList);
-                if (filterMatcher != null) {
-                    matcher = stack -> filterMatcher.test(stack) || filterCache.match(stack);
-                } else {
-                    matcher = filterCache::match;
-                }
+                ItemFilterCache filterCache = new ItemFilterCache(metaMode, oredictMode, blacklist, nbtMode, filterList);
+                matcher = filterCache::match;
             }
         }
         return matcher;
-    }
-
-    @Nullable
-    private Predicate<ItemStack> getIndexFilterMatcher(IControllerContext context) {
-        if (filterIndex == -1) {
-            return null;
-        }
-        return s -> context.getIndexedFilter(filterIndex-1).test(s);
     }
 
     public StackMode getStackMode() {
@@ -226,12 +196,8 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         return speed;
     }
 
-    public int getFilterIndex() {
-        return filterIndex;
-    }
-
-    private static final Set<String> INSERT_TAGS = ImmutableSet.of(TAG_MODE, TAG_RS, TAG_COLOR+"0", TAG_COLOR+"1", TAG_COLOR+"2", TAG_COLOR+"3", TAG_COUNT, TAG_PRIORITY, TAG_TAGS, TAG_META, TAG_NBT, TAG_BLACKLIST);
-    private static final Set<String> EXTRACT_TAGS = ImmutableSet.of(TAG_MODE, TAG_RS, TAG_COLOR+"0", TAG_COLOR+"1", TAG_COLOR+"2", TAG_COLOR+"3", TAG_COUNT, TAG_TAGS, TAG_META, TAG_NBT, TAG_BLACKLIST, TAG_STACK, TAG_SPEED, TAG_EXTRACT, TAG_EXTRACT_AMOUNT);
+    private static final Set<String> INSERT_TAGS = ImmutableSet.of(TAG_MODE, TAG_RS, TAG_COLOR+"0", TAG_COLOR+"1", TAG_COLOR+"2", TAG_COLOR+"3", TAG_COUNT, TAG_PRIORITY, TAG_OREDICT, TAG_META, TAG_NBT, TAG_BLACKLIST);
+    private static final Set<String> EXTRACT_TAGS = ImmutableSet.of(TAG_MODE, TAG_RS, TAG_COLOR+"0", TAG_COLOR+"1", TAG_COLOR+"2", TAG_COLOR+"3", TAG_COUNT, TAG_OREDICT, TAG_META, TAG_NBT, TAG_BLACKLIST, TAG_STACK, TAG_SPEED, TAG_EXTRACT, TAG_EXTRACT_AMOUNT);
 
     @Override
     public boolean isEnabled(String tag) {
@@ -241,7 +207,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         if (tag.equals(TAG_FACING)) {
             return advanced;
         }
-        if (itemMode == ItemMode.输入) {
+        if (itemMode == ItemMode.INS) {
             return INSERT_TAGS.contains(tag);
         } else {
             return EXTRACT_TAGS.contains(tag);
@@ -254,7 +220,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         itemMode = ItemMode.valueOf(((String)data.get(TAG_MODE)).toUpperCase());
         Object emode = data.get(TAG_EXTRACT);
         if (emode == null) {
-            extractMode = ExtractMode.提取第一个;
+            extractMode = ExtractMode.FIRST;
         } else {
             extractMode = ExtractMode.valueOf(((String) emode).toUpperCase());
         }
@@ -263,9 +229,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         if (speed == 0) {
             speed = 4;
         }
-        String idx = (String) data.get(TAG_FILTER_IDX);
-        this.filterIndex = "关闭".equalsIgnoreCase(idx) ? -1 : Integer.parseInt(idx);
-        tagsMode = Boolean.TRUE.equals(data.get(TAG_TAGS));
+        oredictMode = Boolean.TRUE.equals(data.get(TAG_OREDICT));
         metaMode = Boolean.TRUE.equals(data.get(TAG_META));
         nbtMode = Boolean.TRUE.equals(data.get(TAG_NBT));
 
@@ -286,7 +250,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         setEnumSafe(object, "itemmode", itemMode);
         setEnumSafe(object, "extractmode", extractMode);
         setEnumSafe(object, "stackmode", stackMode);
-        object.add("tagsmode", new JsonPrimitive(tagsMode));
+        object.add("oredictmode", new JsonPrimitive(oredictMode));
         object.add("metamode", new JsonPrimitive(metaMode));
         object.add("nbtmode", new JsonPrimitive(nbtMode));
         object.add("blacklist", new JsonPrimitive(blacklist));
@@ -294,10 +258,9 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         setIntegerSafe(object, "extractamount", extractAmount);
         setIntegerSafe(object, "count", count);
         setIntegerSafe(object, "speed", speed);
-        setIntegerSafe(object, "filterindex", filterIndex);
         for (int i = 0 ; i < FILTER_SIZE ; i++) {
             if (!filters.get(i).isEmpty()) {
-                object.add("filter" + i, JSonTools.itemStackToJson(filters.get(i)));
+                object.add("filter" + i, ItemStackTools.itemStackToJson(filters.get(i)));
             }
         }
         if (speed == 1) {
@@ -313,7 +276,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         itemMode = getEnumSafe(object, "itemmode", EnumStringTranslators::getItemMode);
         extractMode = getEnumSafe(object, "extractmode", EnumStringTranslators::getExtractMode);
         stackMode = getEnumSafe(object, "stackmode", EnumStringTranslators::getStackMode);
-        tagsMode = getBoolSafe(object, "tagsmode");
+        oredictMode = getBoolSafe(object, "oredictmode");
         metaMode = getBoolSafe(object, "metamode");
         nbtMode = getBoolSafe(object, "nbtmode");
         blacklist = getBoolSafe(object, "blacklist");
@@ -321,14 +284,9 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         extractAmount = getIntegerSafe(object, "extractamount");
         count = getIntegerSafe(object, "count");
         speed = getIntegerNotNull(object, "speed");
-        if (object.has("filterindex")) {
-            filterIndex = getIntegerNotNull(object, "filterindex");
-        } else {
-            filterIndex = -1;
-        }
         for (int i = 0 ; i < FILTER_SIZE ; i++) {
             if (object.has("filter" + i)) {
-                filters.set(i, JSonTools.jsonToItemStack(object.get("filter" + i).getAsJsonObject()));
+                filters.set(i, ItemStackTools.jsonToItemStack(object.get("filter" + i).getAsJsonObject()));
             } else {
                 filters.set(i, ItemStack.EMPTY);
             }
@@ -336,50 +294,45 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
     }
 
     @Override
-    public void readFromNBT(CompoundNBT tag) {
+    public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
         itemMode = ItemMode.values()[tag.getByte("itemMode")];
         extractMode = ExtractMode.values()[tag.getByte("extractMode")];
         stackMode = StackMode.values()[tag.getByte("stackMode")];
-        if (tag.contains("spd")) {
+        if (tag.hasKey("spd")) {
             // New tag
-            speed = tag.getInt("spd");
+            speed = tag.getInteger("spd");
         } else {
             // Old tag for compatibility
-            speed = tag.getInt("speed");
+            speed = tag.getInteger("speed");
             if (speed == 0) {
                 speed = 2;
             }
             speed *= 2;
         }
-        if (tag.contains("filterindex")) {
-            filterIndex = tag.getInt("filterindex");
-        } else {
-            filterIndex = -1;
-        }
-        tagsMode = tag.getBoolean("tagsMode");
+        oredictMode = tag.getBoolean("oredictMode");
         metaMode = tag.getBoolean("metaMode");
         nbtMode = tag.getBoolean("nbtMode");
         blacklist = tag.getBoolean("blacklist");
-        if (tag.contains("priority")) {
-            priority = tag.getInt("priority");
+        if (tag.hasKey("priority")) {
+            priority = tag.getInteger("priority");
         } else {
             priority = null;
         }
-        if (tag.contains("extractAmount")) {
-            extractAmount = tag.getInt("extractAmount");
+        if (tag.hasKey("extractAmount")) {
+            extractAmount = tag.getInteger("extractAmount");
         } else {
             extractAmount = null;
         }
-        if (tag.contains("count")) {
-            count = tag.getInt("count");
+        if (tag.hasKey("count")) {
+            count = tag.getInteger("count");
         } else {
             count = null;
         }
         for (int i = 0 ; i < FILTER_SIZE ; i++) {
-            if (tag.contains("filter" + i)) {
-                CompoundNBT itemTag = tag.getCompound("filter" + i);
-                filters.set(i, ItemStack.of(itemTag));
+            if (tag.hasKey("filter" + i)) {
+                NBTTagCompound itemTag = tag.getCompoundTag("filter" + i);
+                filters.set(i, new ItemStack(itemTag));
             } else {
                 filters.set(i, ItemStack.EMPTY);
             }
@@ -388,31 +341,30 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
     }
 
     @Override
-    public void writeToNBT(CompoundNBT tag) {
+    public void writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
-        tag.putByte("itemMode", (byte) itemMode.ordinal());
-        tag.putByte("extractMode", (byte) extractMode.ordinal());
-        tag.putByte("stackMode", (byte) stackMode.ordinal());
-        tag.putInt("spd", speed);
-        tag.putInt("filterindex", filterIndex);
-        tag.putBoolean("tagsMode", tagsMode);
-        tag.putBoolean("metaMode", metaMode);
-        tag.putBoolean("nbtMode", nbtMode);
-        tag.putBoolean("blacklist", blacklist);
+        tag.setByte("itemMode", (byte) itemMode.ordinal());
+        tag.setByte("extractMode", (byte) extractMode.ordinal());
+        tag.setByte("stackMode", (byte) stackMode.ordinal());
+        tag.setInteger("spd", speed);
+        tag.setBoolean("oredictMode", oredictMode);
+        tag.setBoolean("metaMode", metaMode);
+        tag.setBoolean("nbtMode", nbtMode);
+        tag.setBoolean("blacklist", blacklist);
         if (priority != null) {
-            tag.putInt("priority", priority);
+            tag.setInteger("priority", priority);
         }
         if (extractAmount != null) {
-            tag.putInt("extractAmount", extractAmount);
+            tag.setInteger("extractAmount", extractAmount);
         }
         if (count != null) {
-            tag.putInt("count", count);
+            tag.setInteger("count", count);
         }
         for (int i = 0 ; i < FILTER_SIZE ; i++) {
             if (!filters.get(i).isEmpty()) {
-                CompoundNBT itemTag = new CompoundNBT();
-                filters.get(i).save(itemTag);
-                tag.put("filter" + i, itemTag);
+                NBTTagCompound itemTag = new NBTTagCompound();
+                filters.get(i).writeToNBT(itemTag);
+                tag.setTag("filter" + i, itemTag);
             }
         }
     }

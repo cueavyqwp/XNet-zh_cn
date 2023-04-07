@@ -3,14 +3,14 @@ package mcjty.xnet.apiimpl.energy;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import mcjty.rftoolsbase.api.xnet.gui.IEditorGui;
-import mcjty.rftoolsbase.api.xnet.gui.IndicatorIcon;
-import mcjty.rftoolsbase.api.xnet.helper.AbstractConnectorSettings;
 import mcjty.xnet.XNet;
+import mcjty.xnet.api.gui.IEditorGui;
+import mcjty.xnet.api.gui.IndicatorIcon;
+import mcjty.xnet.api.helper.AbstractConnectorSettings;
 import mcjty.xnet.apiimpl.EnumStringTranslators;
-import mcjty.xnet.setup.Config;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import mcjty.xnet.config.ConfigSetup;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -28,17 +28,17 @@ public class EnergyConnectorSettings extends AbstractConnectorSettings {
     public static final String TAG_PRIORITY = "priority";
 
     public enum EnergyMode {
-        输入,
-        输出
+        INS,
+        EXT
     }
 
-    private EnergyMode energyMode = EnergyMode.输入;
+    private EnergyMode energyMode = EnergyMode.INS;
 
     @Nullable private Integer priority = 0;
     @Nullable private Integer rate = null;
     @Nullable private Integer minmax = null;
 
-    public EnergyConnectorSettings(@Nonnull Direction side) {
+    public EnergyConnectorSettings(@Nonnull EnumFacing side) {
         super(side);
     }
 
@@ -50,9 +50,9 @@ public class EnergyConnectorSettings extends AbstractConnectorSettings {
     @Override
     public IndicatorIcon getIndicatorIcon() {
         switch (energyMode) {
-            case 输入:
+            case INS:
                 return new IndicatorIcon(iconGuiElements, 0, 70, 13, 10);
-            case 输出:
+            case EXT:
                 return new IndicatorIcon(iconGuiElements, 13, 70, 13, 10);
         }
         return null;
@@ -71,18 +71,18 @@ public class EnergyConnectorSettings extends AbstractConnectorSettings {
         colorsGui(gui);
         redstoneGui(gui);
         gui.nl()
-                .choices(TAG_MODE, "输出模式 或 输入模式", energyMode, EnergyMode.values())
+                .choices(TAG_MODE, "Insert or extract mode", energyMode, EnergyMode.values())
                 .nl()
 
-                .label("优先级").integer(TAG_PRIORITY, "优先级越高就越先处理", priority, 30).nl()
+                .label("Pri").integer(TAG_PRIORITY, "Insertion priority", priority, 30).nl()
 
-                .label("速率")
+                .label("Rate")
                 .integer(TAG_RATE,
-                        (energyMode == EnergyMode.输出 ? "最大能量输出率" : "最大能量获取率") +
-                        "|(限定 " + (advanced ? Config.maxRfRateAdvanced.get() : Config.maxRfRateNormal.get()) + " 每游戏刻)", rate, 40)
+                        (energyMode == EnergyMode.EXT ? "Max energy extraction rate" : "Max energy insertion rate") +
+                        "|(limited to " + (advanced ? ConfigSetup.maxRfRateAdvanced.get() : ConfigSetup.maxRfRateNormal.get()) + " per tick)", rate, 40)
                 .shift(10)
-                .label(energyMode == EnergyMode.输出 ? "最少" : "最多")
-                .integer(TAG_MINMAX, energyMode == EnergyMode.输出 ? "当低于多少能量时停止" : "当高于多少能量时停止", minmax, 50);
+                .label(energyMode == EnergyMode.EXT ? "Min" : "Max")
+                .integer(TAG_MINMAX, energyMode == EnergyMode.EXT ? "Disable extraction if energy|is too low" : "Disable insertion if energy|is too high", minmax, 50);
     }
 
     private static final Set<String> INSERT_TAGS = ImmutableSet.of(TAG_MODE, TAG_RS, TAG_COLOR+"0", TAG_COLOR+"1", TAG_COLOR+"2", TAG_COLOR+"3", TAG_RATE, TAG_MINMAX, TAG_PRIORITY);
@@ -90,7 +90,7 @@ public class EnergyConnectorSettings extends AbstractConnectorSettings {
 
     @Override
     public boolean isEnabled(String tag) {
-        if (energyMode == EnergyMode.输入) {
+        if (energyMode == EnergyMode.INS) {
             if (tag.equals(TAG_FACING)) {
                 return advanced;
             }
@@ -135,7 +135,7 @@ public class EnergyConnectorSettings extends AbstractConnectorSettings {
         setIntegerSafe(object, "priority", priority);
         setIntegerSafe(object, "rate", rate);
         setIntegerSafe(object, "minmax", minmax);
-        if (rate != null && rate > Config.maxRfRateNormal.get()) {
+        if (rate != null && rate > ConfigSetup.maxRfRateNormal.get()) {
             object.add("advancedneeded", new JsonPrimitive(true));
         }
         return object;
@@ -151,38 +151,38 @@ public class EnergyConnectorSettings extends AbstractConnectorSettings {
     }
 
     @Override
-    public void readFromNBT(CompoundNBT tag) {
+    public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
         energyMode = EnergyMode.values()[tag.getByte("itemMode")];
-        if (tag.contains("priority")) {
-            priority = tag.getInt("priority");
+        if (tag.hasKey("priority")) {
+            priority = tag.getInteger("priority");
         } else {
             priority = null;
         }
-        if (tag.contains("rate")) {
-            rate = tag.getInt("rate");
+        if (tag.hasKey("rate")) {
+            rate = tag.getInteger("rate");
         } else {
             rate = null;
         }
-        if (tag.contains("minmax")) {
-            minmax = tag.getInt("minmax");
+        if (tag.hasKey("minmax")) {
+            minmax = tag.getInteger("minmax");
         } else {
             minmax = null;
         }
     }
 
     @Override
-    public void writeToNBT(CompoundNBT tag) {
+    public void writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
-        tag.putByte("itemMode", (byte) energyMode.ordinal());
+        tag.setByte("itemMode", (byte) energyMode.ordinal());
         if (priority != null) {
-            tag.putInt("priority", priority);
+            tag.setInteger("priority", priority);
         }
         if (rate != null) {
-            tag.putInt("rate", rate);
+            tag.setInteger("rate", rate);
         }
         if (minmax != null) {
-            tag.putInt("minmax", minmax);
+            tag.setInteger("minmax", minmax);
         }
     }
 }

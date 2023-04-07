@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "xnet:antenna_base"
+  },
+  "pattern": [
+    " i ",
+    " i ",
+    "iIi"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    }
+  }
+}

@@ -1,11 +1,14 @@
 package mcjty.xnet.apiimpl;
 
-import mcjty.rftoolsbase.api.xnet.IXNet;
-import mcjty.rftoolsbase.api.xnet.channels.IChannelType;
-import mcjty.rftoolsbase.api.xnet.channels.IConnectable;
-import mcjty.rftoolsbase.api.xnet.channels.IConsumerProvider;
-import mcjty.rftoolsbase.api.xnet.net.IWorldBlob;
+import mcjty.xnet.api.IXNet;
+import mcjty.xnet.api.channels.IChannelType;
+import mcjty.xnet.api.channels.IConnectable;
+import mcjty.xnet.api.channels.IConsumerProvider;
+import mcjty.xnet.api.keys.NetworkId;
+import mcjty.xnet.api.net.IWorldBlob;
+import mcjty.xnet.multiblock.WorldBlob;
 import mcjty.xnet.multiblock.XNetBlobData;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -55,6 +58,6 @@ public class XNetApi implements IXNet {
 
     @Override
     public IWorldBlob getWorldBlob(World world) {
-        return XNetBlobData.get(world).getWorldBlob(world);
+        return XNetBlobData.getBlobData(world).getWorldBlob(world);
     }
 }

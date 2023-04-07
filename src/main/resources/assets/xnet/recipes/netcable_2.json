@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "xnet:netcable",
+    "data": 2
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "type": "xnet:basic_cable"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "dyeYellow"
+    }
+  ]
+}

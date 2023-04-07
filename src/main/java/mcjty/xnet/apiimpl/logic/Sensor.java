@@ -1,19 +1,21 @@
 package mcjty.xnet.apiimpl.logic;
 
 import mcjty.lib.varia.FluidTools;
-import mcjty.rftoolsbase.api.xnet.channels.Color;
-import mcjty.rftoolsbase.api.xnet.gui.IEditorGui;
+import mcjty.xnet.api.channels.Color;
+import mcjty.xnet.api.gui.IEditorGui;
 import mcjty.xnet.apiimpl.energy.EnergyChannelSettings;
 import mcjty.xnet.apiimpl.fluids.FluidChannelSettings;
 import mcjty.xnet.apiimpl.items.ItemChannelSettings;
 import mcjty.xnet.compat.RFToolsSupport;
+import mcjty.xnet.setup.ModSetup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -22,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiPredicate;
 
-import static mcjty.rftoolsbase.api.xnet.channels.Color.COLORS;
-import static mcjty.rftoolsbase.api.xnet.channels.Color.OFF;
+import static mcjty.xnet.api.channels.Color.COLORS;
+import static mcjty.xnet.api.channels.Color.OFF;
 
 public class Sensor {
 
@@ -35,16 +37,16 @@ public class Sensor {
 
 
     public enum SensorMode {
-        关闭,
-        物品,
-        流体,
-        能量,
+        OFF,
+        ITEM,
+        FLUID,
+        ENERGY,
         RS
     }
 
     public enum Operator {
-        EQUAL("=", Integer::equals),
-        NOTEQUAL("!=", (i1, i2) -> !i1.equals(i2)),
+        EQUAL("=", (i1, i2) -> i1 == i2),
+        NOTEQUAL("!=", (i1, i2) -> i1 != i2),
         LESS("<", (i1, i2) -> i1 < i2),
         GREATER(">", (i1, i2) -> i1 > i2),
         LESSOREQUAL("<=", (i1, i2) -> i1 <= i2),
@@ -86,7 +88,7 @@ public class Sensor {
 
     private final int index;
 
-    private SensorMode sensorMode = SensorMode.关闭;
+    private SensorMode sensorMode = SensorMode.OFF;
     private Operator operator = Operator.EQUAL;
     private int amount = 0;
     private Color outputColor = OFF;
@@ -150,41 +152,45 @@ public class Sensor {
             return true;
         }
         if ((TAG_STACK + index).equals(tag)) {
-            return sensorMode == SensorMode.流体 || sensorMode == SensorMode.物品;
+            return sensorMode == SensorMode.FLUID || sensorMode == SensorMode.ITEM;
         }
         return false;
     }
 
     public void createGui(IEditorGui gui) {
         gui
-                .choices(TAG_MODE + index, "模式", sensorMode, SensorMode.values())
-                .choices(TAG_OPERATOR + index, "= != < > <= >=", operator, Operator.values())
-                .integer(TAG_AMOUNT + index, "要比较的数据", amount, 46)
-                .colors(TAG_COLOR + index, "输出颜色", outputColor.getColor(), COLORS)
+                .choices(TAG_MODE + index, "Sensor mode", sensorMode, SensorMode.values())
+                .choices(TAG_OPERATOR + index, "Operator", operator, Operator.values())
+                .integer(TAG_AMOUNT + index, "Amount to compare with", amount, 46)
+                .colors(TAG_COLOR + index, "Output color", outputColor.getColor(), COLORS)
                 .ghostSlot(TAG_STACK + index, filter)
                 .nl();
     }
 
     public boolean test(@Nullable TileEntity te, @Nonnull World world, @Nonnull BlockPos pos, LogicConnectorSettings settings) {
         switch (sensorMode) {
-            case 物品: {
-                if (RFToolsSupport.isStorageScanner(te)) {
+            case ITEM: {
+                if (ModSetup.rftools && RFToolsSupport.isStorageScanner(te)) {
                     int cnt = RFToolsSupport.countItems(te, filter, amount + 1);
                     return operator.match(cnt, amount);
                 } else {
-                    return ItemChannelSettings.getItemHandlerAt(te, settings.getFacing()).map(h -> {
-                        int cnt = countItem(h, filter, amount + 1);
+                    IItemHandler handler = ItemChannelSettings.getItemHandlerAt(te, settings.getFacing());
+                    if (handler != null) {
+                        int cnt = countItem(handler, filter, amount + 1);
                         return operator.match(cnt, amount);
-                    }).orElse(false);
+                    }
                 }
+                break;
             }
-            case 流体: {
-                return FluidChannelSettings.getFluidHandlerAt(te, settings.getFacing()).map(h -> {
-                    int cnt = countFluid(h, filter, amount + 1);
+            case FLUID: {
+                IFluidHandler handler = FluidChannelSettings.getFluidHandlerAt(te, settings.getFacing());
+                if (handler != null) {
+                    int cnt = countFluid(handler, filter, amount + 1);
                     return operator.match(cnt, amount);
-                }).orElse(false);
+                }
+                break;
             }
-            case 能量: {
+            case ENERGY: {
                 if (EnergyChannelSettings.isEnergyTE(te, settings.getFacing())) {
                     int cnt = EnergyChannelSettings.getEnergyLevel(te, settings.getFacing());
                     return operator.match(cnt, amount);
@@ -192,10 +198,10 @@ public class Sensor {
                 break;
             }
             case RS: {
-                int cnt = world.getSignal(pos, settings.getFacing());
+                int cnt = world.getRedstonePower(pos, settings.getFacing());
                 return operator.match(cnt, amount);
             }
-            case 关闭:
+            case OFF:
             default:
                 break;
         }
@@ -216,7 +222,7 @@ public class Sensor {
         if (sm != null) {
             sensorMode = SensorMode.valueOf(((String) sm).toUpperCase());
         } else {
-            sensorMode = SensorMode.关闭;
+            sensorMode = SensorMode.OFF;
         }
         Object op = data.get(TAG_OPERATOR + index);
         if (op != null) {
@@ -237,28 +243,28 @@ public class Sensor {
         }
     }
 
-    public void readFromNBT(CompoundNBT tag) {
+    public void readFromNBT(NBTTagCompound tag) {
         sensorMode = SensorMode.values()[tag.getByte("sensorMode" + index)];
         operator = Operator.values()[tag.getByte("operator" + index)];
-        amount = tag.getInt("amount" + index);
+        amount = tag.getInteger("amount" + index);
         outputColor = Color.values()[tag.getByte("scolor" + index)];
-        if (tag.contains("filter" + index)) {
-            CompoundNBT itemTag = tag.getCompound("filter" + index);
-            filter = ItemStack.of(itemTag);
+        if (tag.hasKey("filter" + index)) {
+            NBTTagCompound itemTag = tag.getCompoundTag("filter" + index);
+            filter = new ItemStack(itemTag);
         } else {
             filter = ItemStack.EMPTY;
         }
     }
 
-    public void writeToNBT(CompoundNBT tag) {
-        tag.putByte("sensorMode" + index, (byte) sensorMode.ordinal());
-        tag.putByte("operator" + index, (byte) operator.ordinal());
-        tag.putInt("amount" + index, amount);
-        tag.putByte("scolor" + index, (byte) outputColor.ordinal());
+    public void writeToNBT(NBTTagCompound tag) {
+        tag.setByte("sensorMode" + index, (byte) sensorMode.ordinal());
+        tag.setByte("operator" + index, (byte) operator.ordinal());
+        tag.setInteger("amount" + index, amount);
+        tag.setByte("scolor" + index, (byte) outputColor.ordinal());
         if (!filter.isEmpty()) {
-            CompoundNBT itemTag = new CompoundNBT();
-            filter.save(itemTag);
-            tag.put("filter" + index, itemTag);
+            NBTTagCompound itemTag = new NBTTagCompound();
+            filter.writeToNBT(itemTag);
+            tag.setTag("filter" + index, itemTag);
         }
     }
 
@@ -269,8 +275,8 @@ public class Sensor {
             ItemStack stack = handler.getStackInSlot(i);
             if (!stack.isEmpty()) {
                 if (!matcher.isEmpty()) {
-                    // @todo 1.14 oredict?
-                    if (matcher.sameItem(stack)) {
+                    // @todo oredict?
+                    if (matcher.isItemEqual(stack)) {
                         cnt += stack.getCount();
                         if (cnt >= maxNeeded) {
                             return cnt;
@@ -294,19 +300,20 @@ public class Sensor {
         } else {
             fluidStack = null;
         }
+        IFluidTankProperties[] properties = handler.getTankProperties();
         int cnt = 0;
-        for (int i = 0 ; i < handler.getTanks() ; i++) {
-            FluidStack contents = handler.getFluidInTank(i);
-            if (!contents.isEmpty()) {
+        for (IFluidTankProperties property : properties) {
+            FluidStack contents = property.getContents();
+            if (contents != null) {
                 if (fluidStack != null) {
                     if (fluidStack.isFluidEqual(contents)) {
-                        cnt += contents.getAmount();
+                        cnt += contents.amount;
                         if (cnt >= maxNeeded) {
                             return cnt;
                         }
                     }
                 } else {
-                    cnt += contents.getAmount();
+                    cnt += contents.amount;
                     if (cnt >= maxNeeded) {
                         return cnt;
                     }

@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "xnet:item/connector_upgrade"
+    "layer0": "xnet:items/connector_upgrade"
   }
 }

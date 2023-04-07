@@ -1,9 +1,10 @@
-package mcjty.rftoolsbase.api.control.code;
+package mcjty.rftoolscontrol.api.code;
 
-import mcjty.rftoolsbase.api.control.parameters.ParameterDescription;
+import mcjty.rftoolscontrol.api.parameters.ParameterDescription;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.*;
 
 public class Opcode {
 

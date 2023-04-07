@@ -1,0 +1,37 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "rftools"
+    }
+  ],
+  "result": {
+    "item": "xnet:router"
+  },
+  "pattern": [
+    "RCR",
+    "rMr",
+    "igi"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "item": "minecraft:golden_rail"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "g": {
+      "item": "minecraft:ender_pearl"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "M": {
+      "item": "rftools:machine_frame"
+    }
+  }
+}

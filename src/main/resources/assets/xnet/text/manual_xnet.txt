@@ -1,20 +1,20 @@
 {b}XNet 手册
 
-目录:
-{l:intro}Introduction
-{l:basic}基础网络
-{l:advanced}Advanced Networking
-{l:types}Channel Types
-{l:netcolors}Network Colors
-{l:colors}Colored Cables
-{l:connector}Connectors
-{l:controller}Controller
-{l:router}Router
-{l:wirelessrouter}Wireless Router
+目录
+{l:intro}引言
+{l:basic}基础网络通信
+{l:advanced}进阶网络通信
+{l:types}通道类型
+{l:netcolors}网络颜色
+{l:colors}彩色线缆
+{l:connector}连接器
+{l:controller}控制器
+{l:router}路由器
+{l:wirelessrouter}无线路由器
 {l:proxy}红石代理器
 
 {-------------------------------------------------------------}
-{b}Introduction
+{b}引言
 {n:intro}
 XNet is all about networking and transporting items, liquids, energy
 and information through the world. Using cables you connect various
@@ -25,7 +25,7 @@ information. You don't need different cables for items, energy, or liquids.
 XNet is also very efficient and scalable. Cables are not tile entities
 and you can create huge cable networks without performance differences.
 {-------------------------------------------------------------}
-{b}Basic Networking
+{b}基础网络通信
 {n:basic}
 A network (or local network) is represented by a number of machines
 and blocks connected using cables and connectors and one controller.
@@ -39,7 +39,7 @@ controller.
 Every channel can be connected to as many blocks and machines as
 you want using connectors.
 {-------------------------------------------------------------}
-{b}Advanced Networking
+{b}进阶网络通信
 {n:advanced}
 Using routers one can connect multiple networks. A single router
 can connect up to 6 networks (one for each side). To do that simply
@@ -53,7 +53,7 @@ A named channel can then be published in the router by giving it
 a 'published name'. Only then can this channel be used by other
 networks (either local or remote).
 {-------------------------------------------------------------}
-{b}Channel Types
+{b}通道类型
 {n:types}
 There are currently four different channel types:
   * xnet.item: for transporting items
@@ -68,7 +68,7 @@ amount of energy, ...) and then set a 'color' on the controller.
 Note that the logic channel doesn't do anything through a router
 right now.
 {-------------------------------------------------------------}
-{b}Network Color
+{b}网络颜色
 {n:netcolors}
 Using a logic channel and sensors you can enable or disable
 fifteen different colors in a controller. Basically a color is
@@ -78,7 +78,7 @@ enable a connection. Every connection can listen to four
 different colors and will only work if all set (non-black)
 colors are enabled.
 {-------------------------------------------------------------}
-{b}Colored Cables
+{b}彩色线缆
 {n:colors}
 Cables and connectors can have four different colors. Do not
 confuse these colors with network colors from the previous
@@ -88,7 +88,7 @@ networks right next to each other without them connecting.
 There is also a 'fifth' color which is for the routing cables
 and connectors.
 {-------------------------------------------------------------}
-{b}Connectors
+{b}连接器
 {n:connector}
 A connector is a part of the cable that can be used to connect
 to a machine. Placing a connector will automatically make a
@@ -103,7 +103,7 @@ connecting too.
 Note that in the GUI of a connector you can give it a name to make
 it easier to identify connectors in the controller.
 {-------------------------------------------------------------}
-{b}Controller (part 1)
+{b}控制器 (第一部分)
 {n:controller}
 {rb:controller}
 The controller is the main driver of a network. Every network
@@ -113,7 +113,7 @@ given type. Then for each connected block on that channel you
 can create a connection. Depending on the type of the channel
 there are various parameters you can set on a connection.
 {-------------------------------------------------------------}
-{b}Controllers (part 2)
+{b}控制器 (第二部分)
 Hint: it is often handy to disable a channel while you are
 working on it so that things don't start moving too soon. This
 can be done in the channel editor section.
@@ -121,7 +121,7 @@ can be done in the channel editor section.
 Note that in that section you can also give the channel a name.
 This is only needed for advanced networking using routers.
 {-------------------------------------------------------------}
-{b}Router (part 1)
+{b}路由器 (第一部分)
 {n:router}
 {rb:router}
 The router is the block that can be used to connect distinct
@@ -129,7 +129,7 @@ networks. On its own it can connect six different networks
 (one networks per side) but using routing cables you can also
 make a routing network and connect multiple routers.
 {-------------------------------------------------------------}
-{b}Router (part 2)
+{b}路由器 (第二部分)
 In the GUI of the router you can see all named channels in all
 local networks (this is why it can be important to be able to
 name channels in the contoller). To make such a channel available
@@ -142,7 +142,7 @@ extracting items (from one of its locally connected blocks) will
 be able to insert items into all blocks connected locally or in
 connected channels from other networks.
 {-------------------------------------------------------------}
-{b}Router (part 3)
+{b}路由器 (第三部分)
 On the right side of the GUI you can see all published channels
 from remote routers. Again channels connect automatically to them
 if they have the same type and name.
@@ -155,7 +155,7 @@ same published name.
 Also note that there is a limit of 32 published channels on a
 routing network.
 {-------------------------------------------------------------}
-{b}Wireless Router (part 1)
+{b}无线路由器 (第一部分)
 {n:wireless_router}
 {rb:wireless_router}
 A wireless router allows transmission of published channels
@@ -164,7 +164,7 @@ have to put the wireless router on a routing network connected
 to one or more routers. The wireless router will make all
 published channels available (provided it has enough power).
 {-------------------------------------------------------------}
-{b}Wireless Router (part 2)
+{b}无线路由器 (第二部分)
 By default a wireless router is set to 'private' mode which
 means that only you will be able to use it. You can change this
 in the GUI. Wireless channels are made available in the router
@@ -174,7 +174,7 @@ A wireless router needs an antenna base on which a normal
 antenna (one or two) or a dish is placed. The dish allows
 for unlimited range.
 {-------------------------------------------------------------}
-{b}Redstone Proxy
+{b}红石代理器
 {n:orixt}
 {rb:redstone_proxy}
 The Redstone Proxy block is a very simple block that has no

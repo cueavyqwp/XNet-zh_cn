@@ -1,7 +1,0 @@
-{
-  "name": "无线网络",
-  "description": "无线连接多个网络",
-  "parent": "xnet:category_xnet",
-  "icon": "xnet:antenna",
-  "sortnum": 30
-}

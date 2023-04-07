@@ -1,74 +1,111 @@
 package mcjty.xnet;
 
 
-import mcjty.lib.modules.Modules;
-import mcjty.rftoolsbase.api.xnet.IXNet;
+import mcjty.lib.base.ModBase;
+import mcjty.lib.proxy.IProxy;
+import mcjty.xnet.api.IXNet;
 import mcjty.xnet.apiimpl.XNetApi;
-import mcjty.xnet.modules.cables.CableModule;
-import mcjty.xnet.modules.controller.ControllerModule;
-import mcjty.xnet.modules.facade.FacadeModule;
-import mcjty.xnet.modules.facade.client.ClientSetup;
-import mcjty.xnet.modules.router.RouterModule;
-import mcjty.xnet.modules.various.VariousModule;
-import mcjty.xnet.modules.wireless.WirelessRouterModule;
-import mcjty.xnet.setup.Config;
+import mcjty.xnet.commands.CommandCheck;
+import mcjty.xnet.commands.CommandDump;
+import mcjty.xnet.commands.CommandRebuild;
+import mcjty.xnet.compat.TOPSupport;
+import mcjty.xnet.compat.WAILASupport;
+import mcjty.xnet.items.manual.GuiXNetManual;
 import mcjty.xnet.setup.ModSetup;
-import mcjty.xnet.setup.Registration;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.*;
 
+import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-@Mod(XNet.MODID)
-public class XNet {
+@Mod(modid = XNet.MODID, name = XNet.MODNAME,
+        dependencies =
+                        "required-after:mcjtylib_ng@[" + XNet.MIN_MCJTYLIB_VER + ",);" +
+                        "after:rftools@[" + XNet.MIN_RFTOOLS_VER + ",);" +
+                        "after:forge@[" + XNet.MIN_FORGE11_VER + ",)",
+        acceptedMinecraftVersions = "[1.12,1.13)",
+        version = XNet.MODVERSION)
+public class XNet implements ModBase {
 
     public static final String MODID = "xnet";
+    public static final String MODNAME = "XNet";
+    public static final String MODVERSION = "1.8.2";
 
-    public static final ModSetup setup = new ModSetup();
+    public static final String MIN_FORGE11_VER = "13.19.0.2176";
+    public static final String MIN_MCJTYLIB_VER = "3.5.0";
+    public static final String MIN_RFTOOLS_VER = "7.50";
 
+    @SidedProxy(clientSide = "mcjty.xnet.setup.ClientProxy", serverSide = "mcjty.xnet.setup.ServerProxy")
+    public static IProxy proxy;
+    public static ModSetup setup = new ModSetup();
+
+    public ClientInfo clientInfo = new ClientInfo();
+
+    @Mod.Instance(MODID)
     public static XNet instance;
-    private final Modules modules = new Modules();
 
-    public static final XNetApi xNetApi = new XNetApi();
+    public static XNetApi xNetApi = new XNetApi();
 
-    public XNet() {
-        instance = this;
-        setupModules();
-
-        Config.register(modules);
-
-        Registration.register();
-
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(setup::init);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(modules::init);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
-
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(modules::initClient);
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::registerBlockColor);
-        });
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent event){
+        setup.preInit(event);
+        proxy.preInit(event);
     }
 
-    private void setupModules() {
-        modules.register(new CableModule());
-        modules.register(new ControllerModule());
-        modules.register(new FacadeModule());
-        modules.register(new RouterModule());
-        modules.register(new WirelessRouterModule());
-        modules.register(new VariousModule());
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent e) {
+        setup.init(e);
+        proxy.init(e);
     }
 
-    private void processIMC(final InterModProcessEvent event) {
-        event.getIMCStream().forEach(message -> {
-            if ("getXNet".equalsIgnoreCase(message.getMethod())) {
-                Supplier<Function<IXNet, Void>> supplier = message.getMessageSupplier();
-                supplier.get().apply(xNetApi);
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent e) {
+        setup.postInit(e);
+        proxy.postInit(e);
+    }
+
+    @Mod.EventHandler
+    public void serverLoad(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandDump());
+//        event.registerServerCommand(new CommandGen());
+        event.registerServerCommand(new CommandRebuild());
+        event.registerServerCommand(new CommandCheck());
+    }
+
+    @Override
+    public String getModId() {
+        return MODID;
+    }
+
+    @Override
+    public void openManual(EntityPlayer player, int bookIndex, String page) {
+        GuiXNetManual.locatePage = page;
+        player.openGui(XNet.instance, bookIndex, player.getEntityWorld(), (int) player.posX, (int) player.posY, (int) player.posZ);
+    }
+
+    @Mod.EventHandler
+    public void imcCallback(FMLInterModComms.IMCEvent event) {
+        for (FMLInterModComms.IMCMessage message : event.getMessages()) {
+            if (message.key.equalsIgnoreCase("getXNet")) {
+                Optional<Function<IXNet, Void>> value = message.getFunctionValue(IXNet.class, Void.class);
+                if (value.isPresent()) {
+                    value.get().apply(xNetApi);
+                } else {
+                    setup.getLogger().warn("Some mod didn't return a valid result with getXNet!");
+                }
             }
-        });
+        }
     }
 
+    @Override
+    public void handleTopExtras() {
+        TOPSupport.registerTopExtras();
+    }
+
+    @Override
+    public void handleWailaExtras() {
+        WAILASupport.registerWailaExtras();
+    }
 }

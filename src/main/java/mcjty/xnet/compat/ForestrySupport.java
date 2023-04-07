@@ -1,13 +1,12 @@
 package mcjty.xnet.compat;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.fml.ModList;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.Loader;
 
 public final class ForestrySupport {
     public enum Tag {
@@ -19,8 +18,8 @@ public final class ForestrySupport {
     	MAX_HEALTH("MaxH", 32),	// Bees, Butterflies
     	AGE("Age", 64);			// Butterflies
 
-    	private final String name;
-    	private final int flag;
+    	private String name;
+    	private int flag;
 	
     	Tag(String name, int flag) {
     		this.name = name;
@@ -51,7 +50,7 @@ public final class ForestrySupport {
 	    BUTTERFLY, SERUM, CATERPILLAR, COCOON };
 
     public static boolean isLoaded() {
-	    return ModList.get().isLoaded(ID);
+	    return Loader.isModLoaded(ID);
     }
 
     /**
@@ -78,8 +77,8 @@ public final class ForestrySupport {
      * @return		the item with appropriate NBT tags removed
      */
     public static ItemStack sanitize(ItemStack item, int flags) {
-	    CompoundNBT tagCompound = item.getTag().copy();
-	    List<Tag> tagsToRemove = new ArrayList<>();
+	    NBTTagCompound tagCompound = item.getTagCompound().copy();
+	    ArrayList<Tag> tagsToRemove = new ArrayList<>();
 	    switch (item.getItem().getRegistryName().toString()) {
 	        case QUEEN_BEE:
 	        case PRINCESS_BEE:
@@ -88,19 +87,19 @@ public final class ForestrySupport {
 	        case DRONE_BEE:
 	        case LARVAE_BEE:
 	            Collections.addAll(tagsToRemove, Tag.GENOME, Tag.MATE, Tag.HEALTH, Tag.IS_ANALYZED, Tag.MAX_HEALTH);
-	            item.setTag(removeTags(tagsToRemove, tagCompound, flags));
+	            item.setTagCompound(removeTags(tagsToRemove, tagCompound, flags));
 	            break;
 	        case SAPLING:
 	        case POLLEN:
 	            Collections.addAll(tagsToRemove, Tag.GENOME, Tag.IS_ANALYZED);
-	            item.setTag(removeTags(tagsToRemove, tagCompound, flags));
+	            item.setTagCompound(removeTags(tagsToRemove, tagCompound, flags));
 	            break;
 	        case BUTTERFLY:
 	        case SERUM:
 	        case CATERPILLAR:
 	        case COCOON:
 	            Collections.addAll(tagsToRemove, Tag.GENOME, Tag.MATE, Tag.HEALTH, Tag.IS_ANALYZED, Tag.MAX_HEALTH, Tag.AGE);
-	            item.setTag(removeTags(tagsToRemove, tagCompound, flags));
+	            item.setTagCompound(removeTags(tagsToRemove, tagCompound, flags));
 	            break;
 	        default:
 	            throw new IllegalArgumentException("Tried to sanitize \"" + item.getItem().getRegistryName().toString() + "\" for Forestry!");
@@ -108,10 +107,10 @@ public final class ForestrySupport {
 	    return item;
     }
 
-    private static CompoundNBT removeTags(Iterable<Tag> tagsToRemove, CompoundNBT compound, int flags) {
+    private static NBTTagCompound removeTags(ArrayList<Tag> tagsToRemove, NBTTagCompound compound, int flags) {
 	    for (Tag tag : tagsToRemove) {
-	        if ((flags & tag.flag) == tag.flag && compound.contains(tag.name)) {
-		        compound.remove(tag.name);
+	        if ((flags & tag.flag) == tag.flag && compound.hasKey(tag.name)) {
+		        compound.removeTag(tag.name);
 	        }
 	    }
 	    return compound;

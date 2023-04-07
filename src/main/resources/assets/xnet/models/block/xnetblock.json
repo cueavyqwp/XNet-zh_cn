@@ -2,11 +2,11 @@
   "parent": "block/cube",
   "textures": {
     "particle": "#front",
-    "down": "rftoolsbase:block/base/machinebottom",
-    "up": "rftoolsbase:block/base/machinetop",
-    "east": "rftoolsbase:block/base/machineside",
-    "west": "rftoolsbase:block/base/machineside",
+    "down": "xnet:blocks/machine_bottom",
+    "up": "xnet:blocks/machine_top",
     "north": "#front",
-    "south": "rftoolsbase:block/base/machineside"
+    "east": "xnet:blocks/machine_side",
+    "south": "xnet:blocks/machine_side",
+    "west": "xnet:blocks/machine_side"
   }
 }

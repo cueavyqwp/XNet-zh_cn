@@ -1,0 +1,10 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "xnet:redstone_proxy"
+  },
+  "variants": {
+    "normal": [ {} ],
+    "inventory": [ {} ]
+  }
+}

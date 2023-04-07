@@ -1,38 +1,45 @@
 package mcjty.xnet.setup;
 
 
+import mcjty.lib.McJtyRegister;
+import mcjty.lib.datafix.fixes.TileEntityNamespace;
 import mcjty.xnet.XNet;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.util.datafix.FixTypes;
+import net.minecraftforge.common.util.ModFixs;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import static mcjty.xnet.XNet.MODID;
+import java.util.HashMap;
+import java.util.Map;
 
+@Mod.EventBusSubscriber
 public class Registration {
 
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-    public static final DeferredRegister<TileEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MODID);
-    public static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
-    public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MODID);
-    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, MODID);
+    @SubscribeEvent
+    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+        ModFixs modFixs = FMLCommonHandler.instance().getDataFixer().init(XNet.MODID, 2);
+        McJtyRegister.registerBlocks(XNet.instance, event.getRegistry(), modFixs, 1);
 
-    public static void register() {
-        BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        TILES.register(FMLJavaModLoadingContext.get().getModEventBus());
-        CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        // We used to accidentally register TEs with names like "minecraft:xnet_facade" instead of "xnet:facade".
+        // Set up a DataFixer to map these incorrect names to the correct ones, so that we don't break old saved games.
+        // @todo Remove all this if we ever break saved-game compatibility.
+        Map<String, String> oldToNewIdMap = new HashMap<>();
+        oldToNewIdMap.put(XNet.MODID + "_facade", XNet.MODID + ":facade");
+        oldToNewIdMap.put("minecraft:" + XNet.MODID + "_facade", XNet.MODID + ":facade");
+        oldToNewIdMap.put(XNet.MODID + "_connector", XNet.MODID + ":connector");
+        oldToNewIdMap.put("minecraft:" + XNet.MODID + "_connector", XNet.MODID + ":connector");
+        oldToNewIdMap.put(XNet.MODID + "_advanced_connector", XNet.MODID + ":advanced_connector");
+        oldToNewIdMap.put("minecraft:" + XNet.MODID + "_advanced_connector", XNet.MODID + ":advanced_connector");
+        modFixs.registerFix(FixTypes.BLOCK_ENTITY, new TileEntityNamespace(oldToNewIdMap, 2));
     }
 
-    public static Item.Properties createStandardProperties() {
-        return new Item.Properties().tab(XNet.setup.getTab());
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+        McJtyRegister.registerItems(XNet.instance, event.getRegistry());
     }
+
 }

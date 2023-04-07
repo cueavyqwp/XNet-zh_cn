@@ -1,14 +1,14 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "xnet:block/netcable"
+    "model": "xnet:netcable"
   },
   "variants": {
     "color": {
-      "blue": { "textures": { "txt": "xnet:block/advanced_none_netcable" }},
-      "red": { "textures": { "txt": "xnet:block/advanced_none_netcable" }},
-      "yellow": { "textures": { "txt": "xnet:block/advanced_none_netcable" }},
-      "green": { "textures": { "txt": "xnet:block/advanced_none_netcable" }}
+      "blue": { "textures": { "txt": "xnet:blocks/advanced_none_netcable" }},
+      "red": { "textures": { "txt": "xnet:blocks/advanced_none_netcable" }},
+      "yellow": { "textures": { "txt": "xnet:blocks/advanced_none_netcable" }},
+      "green": { "textures": { "txt": "xnet:blocks/advanced_none_netcable" }}
     }
   }
 }

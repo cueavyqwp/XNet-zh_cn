@@ -36,12 +36,12 @@ window {
             spacing(1)
             horizmargin(3)
         }
-        label('','本地频道') {
+        label('','Local Channels') {
             hint(6,8,166,13)
             color(-14531414)
             horizalign('ALIGN_LEFT')
         }
-        label('','远程频道') {
+        label('','Remote Channels') {
             hint(172,8,164,13)
             color(-14531414)
             horizalign('ALIGN_LEFT')

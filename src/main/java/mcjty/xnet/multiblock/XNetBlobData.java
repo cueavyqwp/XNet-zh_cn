@@ -1,10 +1,8 @@
 package mcjty.xnet.multiblock;
 
-import mcjty.lib.varia.LevelTools;
 import mcjty.lib.worlddata.AbstractWorldData;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.RegistryKey;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -15,56 +13,60 @@ public class XNetBlobData extends AbstractWorldData<XNetBlobData> {
 
     private static final String NAME = "XNetBlobData";
 
-    private final Map<RegistryKey<World>, WorldBlob> worldBlobMap = new HashMap<>();
+    private final Map<Integer, WorldBlob> worldBlobMap = new HashMap<>();
 
     public XNetBlobData(String name) {
         super(name);
     }
 
+    @Override
+    public void clear() {
+        worldBlobMap.clear();
+    }
+
     @Nonnull
-    public static XNetBlobData get(World world) {
-        return getData(world, () -> new XNetBlobData(NAME), NAME);
+    public static XNetBlobData getBlobData(World world) {
+        return getData(world, XNetBlobData.class, NAME);
     }
 
     public WorldBlob getWorldBlob(World world) {
-        return getWorldBlob(world.dimension());
+        return getWorldBlob(world.provider.getDimension());
     }
 
-    public WorldBlob getWorldBlob(RegistryKey<World> type) {
-        if (!worldBlobMap.containsKey(type)) {
-            worldBlobMap.put(type, new WorldBlob(type));
+    public WorldBlob getWorldBlob(int dimId) {
+        if (!worldBlobMap.containsKey(dimId)) {
+            worldBlobMap.put(dimId, new WorldBlob(dimId));
         }
-        return worldBlobMap.get(type);
+        return worldBlobMap.get(dimId);
     }
 
 
     @Override
-    public void load(CompoundNBT compound) {
+    public void readFromNBT(NBTTagCompound compound) {
         worldBlobMap.clear();
-        if (compound.contains("worlds")) {
-            ListNBT worlds = (ListNBT) compound.get("worlds");
-            for (net.minecraft.nbt.INBT world : worlds) {
-                CompoundNBT tc = (CompoundNBT) world;
-                RegistryKey<World> dim = LevelTools.getId(tc.getString("dimtype"));
-                WorldBlob blob = new WorldBlob(dim);
+        if (compound.hasKey("worlds")) {
+            NBTTagList worlds = (NBTTagList) compound.getTag("worlds");
+            for (int i = 0 ; i < worlds.tagCount() ; i++) {
+                NBTTagCompound tc = (NBTTagCompound) worlds.get(i);
+                int id = tc.getInteger("dimid");
+                WorldBlob blob = new WorldBlob(id);
                 blob.readFromNBT(tc);
-                worldBlobMap.put(dim, blob);
+                worldBlobMap.put(id, blob);
             }
         }
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT compound) {
-        ListNBT list = new ListNBT();
-        for (Map.Entry<RegistryKey<World>, WorldBlob> entry : worldBlobMap.entrySet()) {
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        NBTTagList list = new NBTTagList();
+        for (Map.Entry<Integer, WorldBlob> entry : worldBlobMap.entrySet()) {
             WorldBlob blob = entry.getValue();
-            CompoundNBT tc = new CompoundNBT();
-            tc.putString("dimtype", blob.getDimensionType().location().toString());
+            NBTTagCompound tc = new NBTTagCompound();
+            tc.setInteger("dimid", blob.getDimId());
             blob.writeToNBT(tc);
-            list.add(tc);
+            list.appendTag(tc);
         }
-        compound.put("worlds", list);
+        compound.setTag("worlds", list);
 
         return compound;
     }

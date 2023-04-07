@@ -1,6 +1,6 @@
-package mcjty.rftoolsbase.api.control.code;
+package mcjty.rftoolscontrol.api.code;
 
-import mcjty.rftoolsbase.api.control.parameters.ParameterType;
+import mcjty.rftoolscontrol.api.parameters.ParameterType;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

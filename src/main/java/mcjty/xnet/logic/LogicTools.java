@@ -1,17 +1,17 @@
 package mcjty.xnet.logic;
 
-import mcjty.lib.varia.OrientationTools;
-import mcjty.lib.varia.LevelTools;
-import mcjty.rftoolsbase.api.xnet.keys.ConsumerId;
-import mcjty.rftoolsbase.api.xnet.keys.NetworkId;
-import mcjty.rftoolsbase.api.xnet.keys.SidedConsumer;
-import mcjty.xnet.modules.cables.blocks.ConnectorBlock;
-import mcjty.xnet.modules.controller.blocks.TileEntityController;
-import mcjty.xnet.modules.router.blocks.TileEntityRouter;
-import mcjty.xnet.modules.wireless.blocks.TileEntityWirelessRouter;
+import mcjty.lib.varia.WorldTools;
+import mcjty.xnet.api.keys.ConsumerId;
+import mcjty.xnet.api.keys.NetworkId;
+import mcjty.xnet.api.keys.SidedConsumer;
+import mcjty.xnet.blocks.cables.ConnectorBlock;
+import mcjty.xnet.blocks.controller.TileEntityController;
+import mcjty.xnet.blocks.router.TileEntityRouter;
+import mcjty.xnet.blocks.wireless.TileEntityWirelessRouter;
 import mcjty.xnet.multiblock.WorldBlob;
 import mcjty.xnet.multiblock.XNetBlobData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -31,10 +31,10 @@ public class LogicTools {
         if (controllerPos == null) {
             return null;
         }
-        if (!LevelTools.isLoaded(world, controllerPos)) {
+        if (!WorldTools.chunkLoaded(world, controllerPos)) {
             return null;
         }
-        TileEntity te = world.getBlockEntity(controllerPos);
+        TileEntity te = world.getTileEntity(controllerPos);
         if (te instanceof TileEntityController) {
             return (TileEntityController) te;
         } else {
@@ -44,7 +44,7 @@ public class LogicTools {
 
     @Nullable
     public static BlockPos getControllerPosForConnector(@Nonnull World world, @Nonnull BlockPos connectorPos) {
-        WorldBlob worldBlob = XNetBlobData.get(world).getWorldBlob(world);
+        WorldBlob worldBlob = XNetBlobData.getBlobData(world).getWorldBlob(world);
         NetworkId networkId = worldBlob.getNetworkAt(connectorPos);
         if (networkId == null) {
             return null;
@@ -54,7 +54,7 @@ public class LogicTools {
 
     // All consumers for a given network
     public static Stream<BlockPos> consumers(@Nonnull World world, @Nonnull NetworkId networkId) {
-        WorldBlob worldBlob = XNetBlobData.get(world).getWorldBlob(world);
+        WorldBlob worldBlob = XNetBlobData.getBlobData(world).getWorldBlob(world);
         return worldBlob.getConsumers(networkId).stream();
     }
 
@@ -80,12 +80,12 @@ public class LogicTools {
 
     // Return all connected blocks that have an actual connector defined in a channel
     public static Stream<BlockPos> connectedBlocks(@Nonnull World world, @Nonnull NetworkId networkId, @Nonnull Set<SidedConsumer> consumers) {
-        WorldBlob worldBlob = XNetBlobData.get(world).getWorldBlob(world);
+        WorldBlob worldBlob = XNetBlobData.getBlobData(world).getWorldBlob(world);
         return consumers.stream()
                 .map(sidedConsumer -> {
                     BlockPos consumerPos = findConsumerPosition(networkId, worldBlob, sidedConsumer.getConsumerId());
                     if (consumerPos != null) {
-                        return consumerPos.relative(sidedConsumer.getSide());
+                        return consumerPos.offset(sidedConsumer.getSide());
                     } else {
                         return null;
                     }
@@ -96,23 +96,23 @@ public class LogicTools {
     // Return all controllers connected to a network
     public static Stream<TileEntityController> controllers(@Nonnull World world, @Nonnull NetworkId networkId) {
         return connectedBlocks(world, networkId)
-                .filter(pos -> world.getBlockEntity(pos) instanceof TileEntityController)
-                .map(pos -> (TileEntityController) world.getBlockEntity(pos));
+                .filter(pos -> world.getTileEntity(pos) instanceof TileEntityController)
+                .map(pos -> (TileEntityController) world.getTileEntity(pos));
     }
 
     // Return all routers connected to a network
     public static Stream<TileEntityRouter> routers(@Nonnull World world, @Nonnull NetworkId networkId) {
         return connectedBlocks(world, networkId)
-                .filter(pos -> world.getBlockEntity(pos) instanceof TileEntityRouter)
-                .map(pos -> (TileEntityRouter) world.getBlockEntity(pos));
+                .filter(pos -> world.getTileEntity(pos) instanceof TileEntityRouter)
+                .map(pos -> (TileEntityRouter) world.getTileEntity(pos));
     }
 
     // Return all potential connected blocks (with or an actual connector defined in the channel)
     public static Stream<BlockPos> connectedBlocks(@Nonnull World world, @Nonnull NetworkId networkId) {
         return consumers(world, networkId)
-                .flatMap(blockPos -> Arrays.stream(OrientationTools.DIRECTION_VALUES)
+                .flatMap(blockPos -> Arrays.stream(EnumFacing.VALUES)
                         .filter(facing -> ConnectorBlock.isConnectable(world, blockPos, facing))
-                        .map(blockPos::relative));
+                        .map(blockPos::offset));
     }
 
     @Nullable

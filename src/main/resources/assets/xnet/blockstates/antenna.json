@@ -1,19 +1,19 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "custom": { "flip-v": true },
+    "model": "xnet:antenna.obj"
+  },
   "variants": {
-    "facing=north": {
-      "model": "xnet:block/antenna"
-    },
-    "facing=south": {
-      "model": "xnet:block/antenna",
-      "y": 180
-    },
-    "facing=west": {
-      "model": "xnet:block/antenna",
-      "y": 270
-    },
-    "facing=east": {
-      "model": "xnet:block/antenna",
-      "y": 90
+    "normal": [{}],
+    "inventory": [{}],
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "west": {"y": 270},
+      "east": {"y": 90}
     }
   }
 }

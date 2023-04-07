@@ -1,0 +1,7 @@
+{
+  "ingredients": {
+    "basic_cable": "mcjty.xnet.blocks.cables.CableIngredientFactory",
+    "basic_connector": "mcjty.xnet.blocks.cables.ConnectorIngredientFactory",
+    "advanced_connector": "mcjty.xnet.blocks.cables.AdvancedConnectorIngredientFactory"
+  }
+}

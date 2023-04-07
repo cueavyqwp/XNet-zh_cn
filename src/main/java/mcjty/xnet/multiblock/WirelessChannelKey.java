@@ -1,6 +1,6 @@
 package mcjty.xnet.multiblock;
 
-import mcjty.rftoolsbase.api.xnet.channels.IChannelType;
+import mcjty.xnet.api.channels.IChannelType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

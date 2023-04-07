@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "xnet:connector_upgrade"
+  },
+  "pattern": [
+    "ce",
+    "dr"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "c": {
+      "item": "minecraft:paper"
+    },
+    "d": {
+      "item": "minecraft:diamond"
+    },
+    "e": {
+      "item": "minecraft:ender_pearl"
+    }
+  }
+}

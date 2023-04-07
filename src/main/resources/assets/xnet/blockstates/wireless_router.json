@@ -1,0 +1,27 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "xnet:wireless_router",
+    "textures": { "txt": "xnet:blocks/machine_wireless_router" }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "west": {"y": 270},
+      "east": {"y": 90},
+      "up": {"x": -90},
+      "down": {"x": 90}
+    },
+    "error": {
+      "false": {
+        "textures": { "txt": "xnet:blocks/machine_wireless_router" }
+      },
+      "true": {
+        "textures": { "txt": "xnet:blocks/machine_wireless_router_error" }
+      }
+    }
+  }
+}

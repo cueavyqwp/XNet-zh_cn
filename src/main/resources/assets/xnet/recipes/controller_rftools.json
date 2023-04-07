@@ -1,0 +1,37 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "rftools"
+    }
+  ],
+  "result": {
+    "item": "xnet:controller"
+  },
+  "pattern": [
+    "RCR",
+    "rMr",
+    "igi"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "item": "minecraft:repeater"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "g": {
+      "item": "minecraft:gold_ingot"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "M": {
+      "item": "rftools:machine_frame"
+    }
+  }
+}

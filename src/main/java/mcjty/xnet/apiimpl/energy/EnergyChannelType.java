@@ -1,10 +1,10 @@
 package mcjty.xnet.apiimpl.energy;
 
-import mcjty.rftoolsbase.api.xnet.channels.IChannelSettings;
-import mcjty.rftoolsbase.api.xnet.channels.IChannelType;
-import mcjty.rftoolsbase.api.xnet.channels.IConnectorSettings;
+import mcjty.xnet.api.channels.IChannelSettings;
+import mcjty.xnet.api.channels.IChannelType;
+import mcjty.xnet.api.channels.IConnectorSettings;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -16,21 +16,21 @@ public class EnergyChannelType implements IChannelType {
 
     @Override
     public String getID() {
-        return "能量";
+        return "xnet.energy";
     }
 
     @Override
     public String getName() {
-        return "能量";
+        return "Energy";
     }
 
     @Override
-    public boolean supportsBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nullable Direction side) {
-        TileEntity te = world.getBlockEntity(pos);
+    public boolean supportsBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nullable EnumFacing side) {
+        TileEntity te = world.getTileEntity(pos);
         if (te == null) {
             return false;
         }
-        if (te.getCapability(CapabilityEnergy.ENERGY, side).isPresent()) {
+        if (te.hasCapability(CapabilityEnergy.ENERGY, side)) {
             return true;
         }
 //        if (te instanceof IInventory) {
@@ -41,7 +41,7 @@ public class EnergyChannelType implements IChannelType {
 
     @Override
     @Nonnull
-    public IConnectorSettings createConnector(@Nonnull Direction side) {
+    public IConnectorSettings createConnector(@Nonnull EnumFacing side) {
         return new EnergyConnectorSettings(side);
     }
 

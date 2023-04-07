@@ -1,0 +1,6 @@
+{
+  "parent": "xnet:block/xnetblock",
+  "textures": {
+    "front": "#txt"
+  }
+}

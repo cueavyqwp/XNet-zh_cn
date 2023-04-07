@@ -1,6 +1,6 @@
-package mcjty.rftoolsbase.api.control.machines;
+package mcjty.rftoolscontrol.api.machines;
 
-import mcjty.rftoolsbase.api.control.parameters.Parameter;
+import mcjty.rftoolscontrol.api.parameters.Parameter;
 
 import javax.annotation.Nullable;
 

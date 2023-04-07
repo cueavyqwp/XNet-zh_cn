@@ -1,7 +1,0 @@
-{
-  "name": "小型网络",
-  "description": "一个小型网络",
-  "parent": "xnet:category_xnet",
-  "icon": "xnet:netcable_red",
-  "sortnum": 10
-}
