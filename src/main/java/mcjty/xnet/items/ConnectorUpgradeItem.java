@@ -48,9 +48,9 @@ public class ConnectorUpgradeItem extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced) {
         super.addInformation(stack, null, tooltip, advanced);
-        tooltip.add(TextFormatting.BLUE + "Sneak right click this on a");
-        tooltip.add(TextFormatting.BLUE + "normal connector to upgrade it");
-        tooltip.add(TextFormatting.BLUE + "to an advanced connector");
+        tooltip.add(TextFormatting.GREEN + "使用其潜行右键连接器");
+        tooltip.add(TextFormatting.GREEN + "使其升级为高级连接器");
+        //用不着三行
     }
 
     @Override
@@ -86,9 +86,9 @@ public class ConnectorUpgradeItem extends Item {
                         world.notifyBlockUpdate(pos, blockState, blockState, 3);
                         player.inventory.decrStackSize(player.inventory.currentItem, 1);
                         player.openContainer.detectAndSendChanges();
-                        player.sendStatusMessage(new TextComponentString(TextFormatting.GREEN + "Connector was upgraded"), false);
+                        player.sendStatusMessage(new TextComponentString(TextFormatting.GREEN + "连接器已升级"), false);
                     } else {
-                        player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "Something went wrong during upgrade!"), false);
+                        player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "升级时出现未知错误!"), false);
                         return EnumActionResult.FAIL;
                     }
                 }
@@ -96,12 +96,12 @@ public class ConnectorUpgradeItem extends Item {
             return EnumActionResult.SUCCESS;
         } else if (block == NetCableSetup.advancedConnectorBlock) {
             if (!world.isRemote) {
-                player.sendStatusMessage(new TextComponentString(TextFormatting.YELLOW + "This connector is already advanced!"), false);
+                player.sendStatusMessage(new TextComponentString(TextFormatting.YELLOW + "此连接器已升过级!"), false);
             }
             return EnumActionResult.SUCCESS;
         } else {
             if (!world.isRemote) {
-                player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "Use this item on a connector to upgrade it!"), false);
+                player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "使用其在连接器上以供升级!"), false);
             }
             return EnumActionResult.SUCCESS;
         }
