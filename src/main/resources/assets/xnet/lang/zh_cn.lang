@@ -2,9 +2,9 @@
 item.xnet.connector_upgrade.name=升级工具
 item.xnet.xnet_manual.name=XNet手册
 itemGroup.XNet=XNet
-message.xnet.antenna=@f放置一根或者两根天线到\n@f一个天线基座的顶部\n@6一个: 范围 %s (%s rf/t/频道数)\n@6两个: 范围 %s (%s rf/t/频道数)
+message.xnet.antenna=@f放置一根或者两根天线到\n@f一个天线基座的顶部\n@6一个: 范围 %s (%s RF/tick/频道)\n@6两个: 范围 %s (%s RF/tick/频道)
 message.xnet.antenna_base=@f天线基座必须放置在\n@f无线路由器的顶部
-message.xnet.antenna_dish=@f天线盘必须放置在\n@f天线基座的顶部\n@f并且可以使用一个非常大的范围\n@6(%s rf/t/频道)
+message.xnet.antenna_dish=@f天线盘必须放置在\n@f天线基座的顶部\n@f并且可以使用一个非常大的范围\n@6(%s RF/tick/频道)
 message.xnet.controller=@f用于自动化的基础方块\n@f在XNet中
 message.xnet.router=@f你可以连接到此方块\n@f多个频道(控制器)
 message.xnet.shiftmessage=<按住Shift>
