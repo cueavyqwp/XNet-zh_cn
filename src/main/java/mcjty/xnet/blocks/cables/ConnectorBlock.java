@@ -152,7 +152,7 @@ public class ConnectorBlock extends GenericCableBlock implements ITileEntityProv
         if (te instanceof ConnectorTileEntity) {
             String name = ((ConnectorTileEntity) te).getConnectorName();
             if (!name.isEmpty()) {
-                probeInfo.text(TextStyleClass.LABEL + "Name: " + TextStyleClass.INFO + name);
+                probeInfo.text(TextStyleClass.LABEL + "名称: " + TextStyleClass.INFO + name);
             }
         }
     }

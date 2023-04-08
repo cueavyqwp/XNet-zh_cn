@@ -655,7 +655,7 @@ public final class TileEntityController extends GenericEnergyReceiverTileEntity 
                 return;
             }
         }
-        XNetMessages.INSTANCE.sendTo(new PacketControllerError("Error copying connector!"), player);
+        XNetMessages.INSTANCE.sendTo(new PacketControllerError("复制连接器时出错!"), player);
     }
 
     private void copyChannel(EntityPlayerMP player, int index) {
@@ -700,7 +700,7 @@ public final class TileEntityController extends GenericEnergyReceiverTileEntity 
 
             XNetMessages.INSTANCE.sendTo(new PacketJsonToClipboard(json), player);
         } else {
-            XNetMessages.INSTANCE.sendTo(new PacketControllerError("Channel does not support this!"), player);
+            XNetMessages.INSTANCE.sendTo(new PacketControllerError("频道不支持此功能!"), player);
         }
     }
 
@@ -768,14 +768,14 @@ public final class TileEntityController extends GenericEnergyReceiverTileEntity 
             JsonObject root = parser.parse(json).getAsJsonObject();
 
             if (!root.has("connector") || !root.has("type")) {
-                XNetMessages.INSTANCE.sendTo(new PacketControllerError("Invalid connector json!"), player);
+                XNetMessages.INSTANCE.sendTo(new PacketControllerError("无效的连接器json!"), player);
                 return;
             }
 
             String typeId = root.get("type").getAsString();
             IChannelType type = XNet.xNetApi.findType(typeId);
             if (type != channels[channel].getType()) {
-                XNetMessages.INSTANCE.sendTo(new PacketControllerError("Wrong channel type!"), player);
+                XNetMessages.INSTANCE.sendTo(new PacketControllerError("错误的频道类型!"), player);
                 return;
             }
             boolean advanced = root.get("advanced").getAsBoolean();
@@ -828,7 +828,7 @@ public final class TileEntityController extends GenericEnergyReceiverTileEntity 
             JsonParser parser = new JsonParser();
             JsonObject root = parser.parse(json).getAsJsonObject();
             if (!root.has("channel") || !root.has("type") || !root.has("name")) {
-                XNetMessages.INSTANCE.sendTo(new PacketControllerError("Invalid channel json!"), player);
+                XNetMessages.INSTANCE.sendTo(new PacketControllerError("无效的频道json!"), player);
                 return;
             }
             String typeId = root.get("type").getAsString();

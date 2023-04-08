@@ -152,7 +152,7 @@ public class LogicChannelSettings extends DefaultChannelSettings implements ICha
             Map<SidedConsumer, IConnectorSettings> connectors = context.getConnectors(channel);
             for (Map.Entry<SidedConsumer, IConnectorSettings> entry : connectors.entrySet()) {
                 LogicConnectorSettings con = (LogicConnectorSettings) entry.getValue();
-                if (con.getLogicMode() == LogicConnectorSettings.LogicMode.SENSOR) {
+                if (con.getLogicMode() == LogicConnectorSettings.LogicMode.检测模式) {
                     sensors.add(Pair.of(entry.getKey(), con));
                 } else {
                     outputs.add(Pair.of(entry.getKey(), con));
@@ -162,7 +162,7 @@ public class LogicChannelSettings extends DefaultChannelSettings implements ICha
             connectors = context.getRoutedConnectors(channel);
             for (Map.Entry<SidedConsumer, IConnectorSettings> entry : connectors.entrySet()) {
                 LogicConnectorSettings con = (LogicConnectorSettings) entry.getValue();
-                if (con.getLogicMode() == LogicConnectorSettings.LogicMode.OUTPUT) {
+                if (con.getLogicMode() == LogicConnectorSettings.LogicMode.红石模式) {
                     outputs.add(Pair.of(entry.getKey(), con));
                 }
             }

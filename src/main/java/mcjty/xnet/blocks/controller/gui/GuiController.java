@@ -161,7 +161,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
         ConnectedBlockClientInfo c = fromServer_connectedBlocks.get(index);
         if (c != null) {
             XNet.instance.clientInfo.hilightBlock(c.getPos().getPos(), System.currentTimeMillis() + 1000 * 5);
-            Logging.message(mc.player, "The block is now highlighted");
+            Logging.message(mc.player, "方块已高亮显示");
             mc.player.closeScreen();
         }
     }
@@ -221,14 +221,14 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
                 if (getSelectedChannel() != -1) {
                     copyConnector();
                 } else {
-                    showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "Nothing selected!");
+                    showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "无选中的!");
                 }
                 return true;
             } else if (keyCode == Keyboard.KEY_V) {
                 if (getSelectedChannel() != -1) {
                     pasteConnector();
                 } else {
-                    showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "Nothing selected!");
+                    showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "无选中的!");
                 }
                 return true;
             }
@@ -248,13 +248,15 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
     }
 
     private void removeConnector(SidedPos sidedPos) {
-        sendServerCommand(XNetMessages.INSTANCE, TileEntityController.CMD_REMOVECONNECTOR,
-                TypedMap.builder()
-                        .put(PARAM_CHANNEL, getSelectedChannel())
-                        .put(PARAM_POS, sidedPos.getPos())
-                        .put(PARAM_SIDE, sidedPos.getSide().ordinal())
-                        .build());
-        refresh();
+        showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "是否移除此连接器?", parent -> { //原本没有 不知道是不是BUG
+            sendServerCommand(XNetMessages.INSTANCE, TileEntityController.CMD_REMOVECONNECTOR,
+                    TypedMap.builder()
+                            .put(PARAM_CHANNEL, getSelectedChannel())
+                            .put(PARAM_POS, sidedPos.getPos())
+                            .put(PARAM_SIDE, sidedPos.getSide().ordinal())
+                            .build());
+            refresh();
+        });
     }
 
     private void createConnector(SidedPos sidedPos) {
@@ -268,7 +270,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
     }
 
     private void removeChannel() {
-        showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "Really remove channel " + (getSelectedChannel() + 1) + "?", parent -> {
+        showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "是否移除此频道" + (getSelectedChannel() + 1) + "?", parent -> {
             sendServerCommand(XNetMessages.INSTANCE, TileEntityController.CMD_REMOVECHANNEL,
                     TypedMap.builder()
                             .put(PARAM_INDEX, getSelectedChannel())
@@ -319,28 +321,28 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
                             .shift(5)
                             .toggle(TAG_ENABLED, "Enable processing on this channel", info.isEnabled())
                             .shift(5)
-                            .text(TAG_NAME, "Channel name", info.getChannelName(), 65);
+                            .text(TAG_NAME, "频道名称", info.getChannelName(), 65);
                     info.getChannelSettings().createGui(editor);
 
                     Button remove = new Button(mc, this).setText("x")
                             .setTextOffset(0, -1)
-                            .setTooltips("Remove this channel")
+                            .setTooltips("移除此频道")
                             .setLayoutHint(new PositionalLayout.PositionalHint(151, 1, 9, 10))
                             .addButtonEvent(parent -> removeChannel());
                     channelEditPanel.addChild(remove);
                     editor.setState(info.getChannelSettings());
 
                     Button copyChannel = new Button(mc, this)
-                            .setText("C")
-                            .setTooltips("Copy this channel to", "the clipboard")
-                            .setLayoutHint(new PositionalLayout.PositionalHint(134, 19, 25, 14))
+                            .setText("复制频道")
+                            .setTooltips("复制此频道至剪贴板")
+                            .setLayoutHint(new PositionalLayout.PositionalHint(109, 19, 50, 14))
                             .addButtonEvent(parent -> copyChannel());
                     channelEditPanel.addChild(copyChannel);
 
                     copyConnector = new Button(mc, this)
-                            .setText("C")
-                            .setTooltips("Copy this connector", "to the clipboard")
-                            .setLayoutHint(new PositionalLayout.PositionalHint(114, 19, 25, 14))
+                            .setText("复制连接器")
+                            .setTooltips("复制此连接器至剪切板")
+                            .setLayoutHint(new PositionalLayout.PositionalHint(59, 19, 50, 14))
                             .addButtonEvent(parent -> copyConnector());
                     channelEditPanel.addChild(copyConnector);
 
@@ -351,12 +353,12 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
                         type.addChoices(channelType.getID());       // Show names?
                     }
                     Button create = new Button(mc, this)
-                            .setText("Create")
+                            .setText("创建")
                             .setLayoutHint(new PositionalLayout.PositionalHint(100, 3, 53, 14))
                             .addButtonEvent(parent -> createChannel(type.getCurrentChoice()));
 
                     Button paste = new Button(mc, this)
-                            .setText("Paste")
+                            .setText("粘贴")
                             .setTooltips("Create a new channel", "from the clipboard")
                             .setLayoutHint(new PositionalLayout.PositionalHint(100, 17, 53, 14))
                             .addButtonEvent(parent -> pasteChannel());
@@ -384,15 +386,15 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
         ask.addChild(new Label(mc, gui).setText(title));
         Panel buttons = new Panel(mc, gui).setLayout(new HorizontalLayout()).setDesiredWidth(100).setDesiredHeight(18);
         if (okEvent != null) {
-            buttons.addChild(new Button(mc, gui).setText("Cancel").addButtonEvent((parent -> {
+            buttons.addChild(new Button(mc, gui).setText("取消").addButtonEvent((parent -> {
                 windowManager.closeWindow(askWindow);
             })));
-            buttons.addChild(new Button(mc, gui).setText("OK").addButtonEvent(parent -> {
+            buttons.addChild(new Button(mc, gui).setText("确认").addButtonEvent(parent -> {
                 windowManager.closeWindow(askWindow);
                 okEvent.buttonClicked(parent);
             }));
         } else {
-            buttons.addChild(new Button(mc, gui).setText("OK").addButtonEvent((parent -> {
+            buttons.addChild(new Button(mc, gui).setText("确认").addButtonEvent((parent -> {
                 windowManager.closeWindow(askWindow);
             })));
         }
@@ -412,7 +414,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
 
 
     private void copyChannel() {
-        showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.GREEN + "Copied channel");
+        showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.GREEN + "复制成功");
         sendServerCommand(XNetMessages.INSTANCE, TileEntityController.CMD_COPYCHANNEL,
                 TypedMap.builder()
                         .put(PARAM_INDEX, getSelectedChannel())

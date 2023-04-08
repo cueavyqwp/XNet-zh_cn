@@ -41,26 +41,26 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
     public static final int FILTER_SIZE = 18;
 
     public enum ItemMode {
-        INS,
-        EXT
+        输入,
+        输出
     }
 
     public enum StackMode {
-        SINGLE,
-        STACK,
-        COUNT
+        单个物品,
+        一组物品,
+        指定数量
     }
 
     public enum ExtractMode {
-        FIRST,
-        RND,
-        ORDER
+        提取第一个,
+        随机提取,
+        循环提取
     }
 
-    private ItemMode itemMode = ItemMode.INS;
-    private ExtractMode extractMode = ExtractMode.FIRST;
+    private ItemMode itemMode = ItemMode.输入;
+    private ExtractMode extractMode = ExtractMode.提取第一个;
     private int speed = 2;
-    private StackMode stackMode = StackMode.SINGLE;
+    private StackMode stackMode = StackMode.单个物品;
     private boolean oredictMode = false;
     private boolean metaMode = false;
     private boolean nbtMode = false;
@@ -85,9 +85,9 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
     @Override
     public IndicatorIcon getIndicatorIcon() {
         switch (itemMode) {
-            case INS:
+            case 输入:
                 return new IndicatorIcon(iconGuiElements, 0, 70, 13, 10);
-            case EXT:
+            case 输出:
                 return new IndicatorIcon(iconGuiElements, 13, 70, 13, 10);
         }
         return null;
@@ -117,7 +117,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
                 .shift(5)
                 .choices(TAG_STACK, "Single item, stack, or count", stackMode, StackMode.values());
 
-        if (stackMode == StackMode.COUNT && itemMode == ItemMode.EXT) {
+        if (stackMode == StackMode.指定数量 && itemMode == ItemMode.输出) {
             gui
                     .integer(TAG_EXTRACT_AMOUNT, "Amount of items to extract|per operation", extractAmount, 30, 64);
         }
@@ -130,9 +130,9 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         gui
                 .label("Pri").integer(TAG_PRIORITY, "Insertion priority", priority, 36).shift(5)
                 .label("#")
-                .integer(TAG_COUNT, itemMode == ItemMode.EXT ? "Amount in destination inventory|to keep" : "Max amount in destination|inventory", count, 30);
+                .integer(TAG_COUNT, itemMode == ItemMode.输出 ? "Amount in destination inventory|to keep" : "Max amount in destination|inventory", count, 30);
 
-        if (itemMode == ItemMode.EXT) {
+        if (itemMode == ItemMode.输出) {
             gui
                     .shift(5)
                     .choices(TAG_EXTRACT, "Extract mode (first available,|random slot or round robin)", extractMode, ExtractMode.values());
@@ -207,7 +207,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         if (tag.equals(TAG_FACING)) {
             return advanced;
         }
-        if (itemMode == ItemMode.INS) {
+        if (itemMode == ItemMode.输入) {
             return INSERT_TAGS.contains(tag);
         } else {
             return EXTRACT_TAGS.contains(tag);
@@ -220,7 +220,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         itemMode = ItemMode.valueOf(((String)data.get(TAG_MODE)).toUpperCase());
         Object emode = data.get(TAG_EXTRACT);
         if (emode == null) {
-            extractMode = ExtractMode.FIRST;
+            extractMode = ExtractMode.提取第一个;
         } else {
             extractMode = ExtractMode.valueOf(((String) emode).toUpperCase());
         }

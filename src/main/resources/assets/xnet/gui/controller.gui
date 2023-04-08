@@ -77,7 +77,7 @@ window {
         }
         textfield('searchbar') {
             channel('searchbar')
-            hint(5,4,89,14)
+            hint(5,4,163,14)
         }
         energybar('energybar') {
             channel('energybar')

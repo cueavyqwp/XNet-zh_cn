@@ -43,14 +43,14 @@ public class GuiConnector extends GenericGuiContainer<ConnectorTileEntity> {
 
         Panel toplevel = new Panel(mc, this).setFilledRectThickness(2).setLayout(new VerticalLayout());
 
-        TextField nameField = new TextField(mc, this).setName("name").setTooltips("Set the name of this connector");
+        TextField nameField = new TextField(mc, this).setName("name").setTooltips("为连接器取名");
 
         Panel namePanel = new Panel(mc, this).setLayout(new HorizontalLayout()).
-                addChild(new Label(mc, this).setText("Name:")).addChild(nameField);
+                addChild(new Label(mc, this).setText("名称:")).addChild(nameField);
         toplevel.addChild(namePanel);
 
         Panel togglePanel = new Panel(mc, this).setLayout(new HorizontalLayout()).
-                addChild(new Label(mc, this).setText("Directions:"));
+                addChild(new Label(mc, this).setText("方向:"));
         for (EnumFacing facing : EnumFacing.VALUES) {
             toggleButtons[facing.ordinal()] = new ToggleButton(mc, this).setText(facing.getName().substring(0, 1).toUpperCase())
                 .addButtonEvent(parent -> {

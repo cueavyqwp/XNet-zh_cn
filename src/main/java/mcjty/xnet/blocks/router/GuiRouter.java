@@ -115,7 +115,7 @@ public class GuiRouter extends GenericGuiContainer<TileEntityRouter> {
         if (channel.isRemote()) {
             labelColor = 0xffaa1133;
         }
-        panel1.addChild(new Label(mc, this).setText("Ch").setColor(labelColor));
+        panel1.addChild(new Label(mc, this).setText("频道").setColor(labelColor));
         panel1.addChild(new Label(mc, this).setText(name));
         panel1.addChild(new Label(mc, this).setText(">").setColor(labelColor));
         if (channel.isRemote()) {
@@ -130,11 +130,11 @@ public class GuiRouter extends GenericGuiContainer<TileEntityRouter> {
         }
 
         Panel panel2 = new Panel(mc, this).setLayout(new HorizontalLayout().setHorizontalMargin(0).setSpacing(0)).setLayoutHint(new PositionalLayout.PositionalHint(0, 13, 160, 13));
-        panel2.addChild(new Label(mc, this).setText("Pos").setColor(labelColor));
+        panel2.addChild(new Label(mc, this).setText("方位").setColor(labelColor));
         panel2.addChild(new Label(mc, this).setText(BlockPosTools.toString(controllerPos)));
 
         Panel panel3 = new Panel(mc, this).setLayout(new HorizontalLayout().setHorizontalMargin(0).setSpacing(0)).setLayoutHint(new PositionalLayout.PositionalHint(0, 26, 160, 13));
-        panel3.addChild(new Label(mc, this).setText("Index").setColor(labelColor));
+        panel3.addChild(new Label(mc, this).setText("索引").setColor(labelColor));
         panel3.addChild(new Label(mc, this).setText(index + " (" + type.getName() + ")"));
 
         panel.addChild(panel1).addChild(panel2).addChild(panel3);

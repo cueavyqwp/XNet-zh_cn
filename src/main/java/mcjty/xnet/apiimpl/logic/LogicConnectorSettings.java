@@ -32,13 +32,13 @@ public class LogicConnectorSettings extends AbstractConnectorSettings {
     public static final String TAG_REDSTONE_OUT = "rsout";
 
     public enum LogicMode {
-        SENSOR,
-        OUTPUT
+        检测模式,
+        红石模式
     }
 
     public static final int SENSORS = 4;
 
-    private LogicMode logicMode = LogicMode.SENSOR;
+    private LogicMode logicMode = LogicMode.检测模式;
     private List<Sensor> sensors = null;
 
     private int colors;         // Current colormask
@@ -73,9 +73,9 @@ public class LogicConnectorSettings extends AbstractConnectorSettings {
     @Override
     public IndicatorIcon getIndicatorIcon() {
         switch (logicMode) {
-            case SENSOR:
+            case 检测模式:
                 return new IndicatorIcon(iconGuiElements, 26, 70, 13, 10);
-            case OUTPUT:
+            case 红石模式:
                 return new IndicatorIcon(iconGuiElements, 39, 70, 13, 10);
         }
         return null;
@@ -94,7 +94,7 @@ public class LogicConnectorSettings extends AbstractConnectorSettings {
     @Override
     public boolean isEnabled(String tag) {
         if (tag.equals(TAG_FACING)) {
-            return advanced && logicMode != LogicMode.OUTPUT;
+            return advanced && logicMode != LogicMode.红石模式;
         }
         if (tag.equals(TAG_SPEED)) {
             return true;
@@ -130,16 +130,16 @@ public class LogicConnectorSettings extends AbstractConnectorSettings {
         colorsGui(gui);
         redstoneGui(gui);
         gui.nl()
-                .choices(TAG_MODE, "Sensor or Output mode", logicMode, LogicMode.values())
-                .choices(TAG_SPEED, (logicMode == LogicMode.SENSOR ? "Number of ticks for each check" : "Number of ticks for each operation"), Integer.toString(speed * 5), speeds)
+                .choices(TAG_MODE, "检测模式 或 红石模式", logicMode, LogicMode.values())
+                .choices(TAG_SPEED, (logicMode == LogicMode.检测模式 ? "每次检查所需的游戏刻" : "每个操作所需的游戏刻"), Integer.toString(speed * 5), speeds)
                 .nl();
-        if (logicMode == LogicMode.SENSOR) {
+        if (logicMode == LogicMode.检测模式) {
             for (Sensor sensor : sensors) {
                 sensor.createGui(gui);
             }
         } else {
             gui.label("Redstone:")
-                    .integer(TAG_REDSTONE_OUT, "Redstone output value", redstoneOut, 40, 16)
+                    .integer(TAG_REDSTONE_OUT, "红石信号输出等级", redstoneOut, 40, 15)
                     .nl();
         }
     }
@@ -155,7 +155,7 @@ public class LogicConnectorSettings extends AbstractConnectorSettings {
         if (speed == 0) {
             speed = 2;
         }
-        if (logicMode == LogicMode.SENSOR) {
+        if (logicMode == LogicMode.检测模式) {
             for (Sensor sensor : sensors) {
                 sensor.update(data);
             }
