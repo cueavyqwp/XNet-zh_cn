@@ -20,7 +20,7 @@ public class GuiProxy implements IGuiHandler {
     public static final int GUI_CONNECTOR = 2;
     public static final int GUI_ROUTER = 3;
     public static final int GUI_WIRELESS_ROUTER = 4;
-    public static final String SHIFT_MESSAGE = "<Press Shift>";
+    public static final String SHIFT_MESSAGE = "<按住Shift>";
 
     @Override
     public Object getServerGuiElement(int guiid, EntityPlayer entityPlayer, World world, int x, int y, int z) {

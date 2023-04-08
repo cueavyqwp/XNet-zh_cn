@@ -101,7 +101,7 @@ public class FacadeItemBlock extends ItemBlock {
             } else {
                 setMimicBlock(itemstack, state);
                 if (world.isRemote) {
-                    player.sendStatusMessage(new TextComponentString("Facade is now mimicing " + block.getLocalizedName()), false);
+                    player.sendStatusMessage(new TextComponentString("伪装器现在伪装成 " + block.getLocalizedName()), false);
                 }
             }
             return EnumActionResult.SUCCESS;
@@ -115,8 +115,8 @@ public class FacadeItemBlock extends ItemBlock {
         super.addInformation(stack, null, tooltip, advanced);
         NBTTagCompound tagCompound = stack.getTagCompound();
         if (tagCompound == null || !tagCompound.hasKey("regName")) {
-            tooltip.add(TextFormatting.BLUE + "Right or sneak-right click on block to mimic");
-            tooltip.add(TextFormatting.BLUE + "Right or sneak-right click on cable/connector to hide");
+            tooltip.add(TextFormatting.BLUE + "右键/潜行右键 方块进行伪装");
+            tooltip.add(TextFormatting.BLUE + "潜行右键 连接器/路由连接器 进行隐藏");
         } else {
             String regName = tagCompound.getString("regName");
             int meta = tagCompound.getInteger("meta");
@@ -124,7 +124,7 @@ public class FacadeItemBlock extends ItemBlock {
             if (value != null) {
                 ItemStack s = new ItemStack(value, 1, meta);
                 if (s.getItem() != null) {
-                    tooltip.add(TextFormatting.BLUE + "Mimicing " + s.getDisplayName());
+                    tooltip.add(TextFormatting.GREEN + "伪装为 " + s.getDisplayName());
                 }
             }
         }

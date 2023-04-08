@@ -400,15 +400,15 @@ public class ConnectorBlock extends GenericCableBlock implements ITileEntityProv
         super.addInformation(stack, player, tooltip, adv);
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-            tooltip.add(TextFormatting.BLUE + "Place connector next to block or");
-            tooltip.add(TextFormatting.BLUE + "machine that should be connected");
-            tooltip.add(TextFormatting.BLUE + "to the network");
+            tooltip.add(TextFormatting.BLUE + "将连接器放在方块或机械旁即可连接");
+            //
+            //
             boolean advanced = this == NetCableSetup.advancedConnectorBlock;
             int maxrf = advanced ? ConfigSetup.maxRfAdvancedConnector.get() : ConfigSetup.maxRfConnector.get();
-            tooltip.add(TextFormatting.GRAY + "" + TextFormatting.BOLD + "Max RF: " + TextFormatting.WHITE + maxrf);
+            tooltip.add(TextFormatting.GRAY + "" + TextFormatting.BOLD + "最大 RF: " + TextFormatting.WHITE + maxrf);
             if (advanced) {
-                tooltip.add(TextFormatting.GRAY + "Allow access to different sides");
-                tooltip.add(TextFormatting.GRAY + "Supports faster item transfer");
+                tooltip.add(TextFormatting.GRAY + "支持从各面进行访问");
+                tooltip.add(TextFormatting.GRAY + "支持更快的物品传输");
             }
         } else {
             tooltip.add(TextFormatting.WHITE + GuiProxy.SHIFT_MESSAGE);
