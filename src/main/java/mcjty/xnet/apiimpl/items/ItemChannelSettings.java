@@ -49,11 +49,11 @@ public class ItemChannelSettings extends DefaultChannelSettings implements IChan
 
 
     public enum ChannelMode {
-        PRIORITY,
-        ROUNDROBIN
+        优先,
+        轮流
     }
 
-    private ChannelMode channelMode = ChannelMode.PRIORITY;
+    private ChannelMode channelMode = ChannelMode.优先;
     private int delay = 0;
     private int roundRobinOffset = 0;
     private Map<ConsumerId, Integer> extractIndices = new HashMap<>();
@@ -283,7 +283,7 @@ public class ItemChannelSettings extends DefaultChannelSettings implements IChan
     // Returns what could not be inserted
     public int insertStackSimulate(@Nonnull List<Pair<SidedConsumer, ItemConnectorSettings>> inserted, @Nonnull IControllerContext context, @Nonnull ItemStack stack) {
         World world = context.getControllerWorld();
-        if (channelMode == ChannelMode.PRIORITY) {
+        if (channelMode == ChannelMode.优先) {
             roundRobinOffset = 0;       // Always start at 0
         }
         int total = stack.getCount();

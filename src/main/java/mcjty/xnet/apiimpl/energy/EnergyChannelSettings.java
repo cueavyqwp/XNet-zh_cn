@@ -243,7 +243,7 @@ public class EnergyChannelSettings extends DefaultChannelSettings implements ICh
             Map<SidedConsumer, IConnectorSettings> connectors = context.getConnectors(channel);
             for (Map.Entry<SidedConsumer, IConnectorSettings> entry : connectors.entrySet()) {
                 EnergyConnectorSettings con = (EnergyConnectorSettings) entry.getValue();
-                if (con.getEnergyMode() == EnergyConnectorSettings.EnergyMode.EXT) {
+                if (con.getEnergyMode() == EnergyConnectorSettings.EnergyMode.输出) {
                     energyExtractors.add(Pair.of(entry.getKey(), con));
                 } else {
                     energyConsumers.add(Pair.of(entry.getKey(), con));
@@ -253,7 +253,7 @@ public class EnergyChannelSettings extends DefaultChannelSettings implements ICh
             connectors = context.getRoutedConnectors(channel);
             for (Map.Entry<SidedConsumer, IConnectorSettings> entry : connectors.entrySet()) {
                 EnergyConnectorSettings con = (EnergyConnectorSettings) entry.getValue();
-                if (con.getEnergyMode() == EnergyConnectorSettings.EnergyMode.INS) {
+                if (con.getEnergyMode() == EnergyConnectorSettings.EnergyMode.输入) {
                     energyConsumers.add(Pair.of(entry.getKey(), con));
                 }
             }

@@ -196,15 +196,15 @@ public abstract class AbstractConnectorSettings implements IConnectorSettings {
     }
 
     protected IEditorGui sideGui(IEditorGui gui) {
-        return gui.choices(TAG_FACING, "Side from which to operate", facingOverride == null ? side : facingOverride, EnumFacing.VALUES);
+        return gui.choices(TAG_FACING, "操作的面", facingOverride == null ? side : facingOverride, EnumFacing.VALUES);
     }
 
     protected IEditorGui colorsGui(IEditorGui gui) {
         return gui
-                .colors(TAG_COLOR + "0", "Enable on color", colors[0].getColor(), Color.COLORS)
-                .colors(TAG_COLOR + "1", "Enable on color", colors[1].getColor(), Color.COLORS)
-                .colors(TAG_COLOR + "2", "Enable on color", colors[2].getColor(), Color.COLORS)
-                .colors(TAG_COLOR + "3", "Enable on color", colors[3].getColor(), Color.COLORS);
+                .colors(TAG_COLOR + "0", "启用颜色", colors[0].getColor(), Color.COLORS)
+                .colors(TAG_COLOR + "1", "启用颜色", colors[1].getColor(), Color.COLORS)
+                .colors(TAG_COLOR + "2", "启用颜色", colors[2].getColor(), Color.COLORS)
+                .colors(TAG_COLOR + "3", "启用颜色", colors[3].getColor(), Color.COLORS);
     }
 
     protected IEditorGui redstoneGui(IEditorGui gui) {

@@ -16,14 +16,14 @@
 {-------------------------------------------------------------}
 {b}引言
 {n:intro}
-XNet is all about networking and transporting items, liquids, energy
-and information through the world. Using cables you connect various
-machines and blocks and in the controller you configure how things
-move through the created network. A cable can send all kinds of
-information. You don't need different cables for items, energy, or liquids.
+XNet的主要功能是
+在世界中进行物品 液体 能源 和 信息 的连接与传输
+使用线缆连接各种机器和方块 并在控制器中配置 使其通过创建的网络移动
+线缆可以发送各种各样的信息
+你不需要各种乱七八糟的导管
 
-XNet is also very efficient and scalable. Cables are not tile entities
-and you can create huge cable networks without performance differences.
+XNet也是非常高效和可扩展的
+线缆不是实体 您可以创建没有性能差异的巨型线缆网络
 {-------------------------------------------------------------}
 {b}基础网络通信
 {n:basic}
@@ -56,10 +56,10 @@ networks (either local or remote).
 {b}通道类型
 {n:types}
 There are currently four different channel types:
-  * xnet.item: for transporting items
-  * xnet.energy: for transporting energy
-  * xnet.fluid: for transporting fluids
-  * xnet.logic: for sensors and logic control
+  * 物品: for transporting items
+  * 能量: for transporting energy
+  * 流体: for transporting fluids
+  * 逻辑: for sensors and logic control
 
 The logic channel is special. It allows you to create sensors to
 measure various things in other blocks (like number of items,

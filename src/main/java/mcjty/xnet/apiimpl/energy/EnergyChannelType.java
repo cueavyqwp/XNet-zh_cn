@@ -16,12 +16,12 @@ public class EnergyChannelType implements IChannelType {
 
     @Override
     public String getID() {
-        return "xnet.energy";
+        return "能量";
     }
 
     @Override
     public String getName() {
-        return "Energy";
+        return "能量";
     }
 
     @Override

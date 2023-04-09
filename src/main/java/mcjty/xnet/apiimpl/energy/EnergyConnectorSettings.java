@@ -28,11 +28,11 @@ public class EnergyConnectorSettings extends AbstractConnectorSettings {
     public static final String TAG_PRIORITY = "priority";
 
     public enum EnergyMode {
-        INS,
-        EXT
+        输入,
+        输出
     }
 
-    private EnergyMode energyMode = EnergyMode.INS;
+    private EnergyMode energyMode = EnergyMode.输入;
 
     @Nullable private Integer priority = 0;
     @Nullable private Integer rate = null;
@@ -50,9 +50,9 @@ public class EnergyConnectorSettings extends AbstractConnectorSettings {
     @Override
     public IndicatorIcon getIndicatorIcon() {
         switch (energyMode) {
-            case INS:
+            case 输入:
                 return new IndicatorIcon(iconGuiElements, 0, 70, 13, 10);
-            case EXT:
+            case 输出:
                 return new IndicatorIcon(iconGuiElements, 13, 70, 13, 10);
         }
         return null;
@@ -71,18 +71,18 @@ public class EnergyConnectorSettings extends AbstractConnectorSettings {
         colorsGui(gui);
         redstoneGui(gui);
         gui.nl()
-                .choices(TAG_MODE, "Insert or extract mode", energyMode, EnergyMode.values())
+                .choices(TAG_MODE, "输出模式 或 输入模式", energyMode, EnergyMode.values())
                 .nl()
 
-                .label("Pri").integer(TAG_PRIORITY, "Insertion priority", priority, 30).nl()
+                .label("优先级").integer(TAG_PRIORITY, "优先级越高就越先处理", priority, 30).nl()
 
-                .label("Rate")
+                .label("速率")
                 .integer(TAG_RATE,
-                        (energyMode == EnergyMode.EXT ? "Max energy extraction rate" : "Max energy insertion rate") +
-                        "|(limited to " + (advanced ? ConfigSetup.maxRfRateAdvanced.get() : ConfigSetup.maxRfRateNormal.get()) + " per tick)", rate, 40)
+                        (energyMode == EnergyMode.输出 ? "最大能量输出率" : "最大能量获取率") +
+                        "|(限定 " + (advanced ? ConfigSetup.maxRfRateAdvanced.get() : ConfigSetup.maxRfRateNormal.get()) + " 每游戏刻)", rate, 40)
                 .shift(10)
-                .label(energyMode == EnergyMode.EXT ? "Min" : "Max")
-                .integer(TAG_MINMAX, energyMode == EnergyMode.EXT ? "Disable extraction if energy|is too low" : "Disable insertion if energy|is too high", minmax, 50);
+                .label(energyMode == EnergyMode.输出 ? "最少" : "最多")
+                .integer(TAG_MINMAX, energyMode == EnergyMode.输出 ? "当低于多少能量时停止" : "当高于多少能量时停止", minmax, 50);
     }
 
     private static final Set<String> INSERT_TAGS = ImmutableSet.of(TAG_MODE, TAG_RS, TAG_COLOR+"0", TAG_COLOR+"1", TAG_COLOR+"2", TAG_COLOR+"3", TAG_RATE, TAG_MINMAX, TAG_PRIORITY);
@@ -90,7 +90,7 @@ public class EnergyConnectorSettings extends AbstractConnectorSettings {
 
     @Override
     public boolean isEnabled(String tag) {
-        if (energyMode == EnergyMode.INS) {
+        if (energyMode == EnergyMode.输入) {
             if (tag.equals(TAG_FACING)) {
                 return advanced;
             }

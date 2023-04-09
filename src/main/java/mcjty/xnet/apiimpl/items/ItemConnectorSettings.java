@@ -113,38 +113,38 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         colorsGui(gui);
         redstoneGui(gui);
         gui.nl()
-                .choices(TAG_MODE, "Insert or extract mode", itemMode, ItemMode.values())
+                .choices(TAG_MODE, "输出模式 或 输入模式", itemMode, ItemMode.values())
                 .shift(5)
-                .choices(TAG_STACK, "Single item, stack, or count", stackMode, StackMode.values());
+                .choices(TAG_STACK, "单个物品 一组物品 或 指定数量", stackMode, StackMode.values());
 
         if (stackMode == StackMode.指定数量 && itemMode == ItemMode.输出) {
             gui
-                    .integer(TAG_EXTRACT_AMOUNT, "Amount of items to extract|per operation", extractAmount, 30, 64);
+                    .integer(TAG_EXTRACT_AMOUNT, "每个操作要提取的项数", extractAmount, 30, 64);
         }
 
         gui
                 .shift(10)
-                .choices(TAG_SPEED, "Number of ticks for each operation", Integer.toString(speed * 5), speeds)
+                .choices(TAG_SPEED, "每个操作所需的游戏刻", Integer.toString(speed * 5), speeds)
                 .nl();
 
         gui
-                .label("Pri").integer(TAG_PRIORITY, "Insertion priority", priority, 36).shift(5)
+                .label("优先级").integer(TAG_PRIORITY, "优先级越高就越先处理", priority, 36).shift(5)
                 .label("#")
-                .integer(TAG_COUNT, itemMode == ItemMode.输出 ? "Amount in destination inventory|to keep" : "Max amount in destination|inventory", count, 30);
+                .integer(TAG_COUNT, itemMode == ItemMode.输出 ? "当还剩多少物品时停止" : "当达到多少物品时停止", count, 30);
 
         if (itemMode == ItemMode.输出) {
             gui
                     .shift(5)
-                    .choices(TAG_EXTRACT, "Extract mode (first available,|random slot or round robin)", extractMode, ExtractMode.values());
+                    .choices(TAG_EXTRACT, "提取模式 (提取第一个 随机提取 或 循环提取)", extractMode, ExtractMode.values());
         }
 
         gui
                 .nl()
 
-                .toggleText(TAG_BLACKLIST, "Enable blacklist mode", "BL", blacklist).shift(2)
-                .toggleText(TAG_OREDICT, "Ore dictionary matching", "Ore", oredictMode).shift(2)
-                .toggleText(TAG_META, "Metadata matching", "Meta", metaMode).shift(2)
-                .toggleText(TAG_NBT, "NBT matching", "NBT", nbtMode)
+                .toggleText(TAG_BLACKLIST, "启用黑名单", "黑名单", blacklist).shift(2)
+                .toggleText(TAG_OREDICT, "标签匹配", "标签", oredictMode).shift(2)
+                .toggleText(TAG_META, "元数据匹配", "元数据", metaMode).shift(2)
+                .toggleText(TAG_NBT, "NBT匹配", "NBT", nbtMode)
                 .nl();
         for (int i = 0 ; i < FILTER_SIZE ; i++) {
             gui.ghostSlot(TAG_FILTER + i, filters.get(i));

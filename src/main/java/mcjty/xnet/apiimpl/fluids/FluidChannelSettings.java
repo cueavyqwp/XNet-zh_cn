@@ -39,11 +39,11 @@ public class FluidChannelSettings extends DefaultChannelSettings implements ICha
     public static final String TAG_MODE = "mode";
 
     public enum ChannelMode {
-        PRIORITY,
-        DISTRIBUTE
+        优先,
+        轮流
     }
 
-    private ChannelMode channelMode = ChannelMode.DISTRIBUTE;
+    private ChannelMode channelMode = ChannelMode.轮流;
     private int delay = 0;
     private int roundRobinOffset = 0;
 
@@ -177,7 +177,7 @@ public class FluidChannelSettings extends DefaultChannelSettings implements ICha
     // Returns what could not be filled
     private int insertFluidSimulate(@Nonnull List<Pair<SidedConsumer, FluidConnectorSettings>> inserted, @Nonnull IControllerContext context, @Nonnull FluidStack stack) {
         World world = context.getControllerWorld();
-        if (channelMode == ChannelMode.PRIORITY) {
+        if (channelMode == ChannelMode.优先) {
             roundRobinOffset = 0;       // Always start at 0
         }
         int amount = stack.amount;
@@ -291,7 +291,7 @@ public class FluidChannelSettings extends DefaultChannelSettings implements ICha
             Map<SidedConsumer, IConnectorSettings> connectors = context.getConnectors(channel);
             for (Map.Entry<SidedConsumer, IConnectorSettings> entry : connectors.entrySet()) {
                 FluidConnectorSettings con = (FluidConnectorSettings) entry.getValue();
-                if (con.getFluidMode() == FluidConnectorSettings.FluidMode.EXT) {
+                if (con.getFluidMode() == FluidConnectorSettings.FluidMode.输出) {
                     fluidExtractors.put(entry.getKey(), con);
                 } else {
                     fluidConsumers.add(Pair.of(entry.getKey(), con));
@@ -301,7 +301,7 @@ public class FluidChannelSettings extends DefaultChannelSettings implements ICha
             connectors = context.getRoutedConnectors(channel);
             for (Map.Entry<SidedConsumer, IConnectorSettings> entry : connectors.entrySet()) {
                 FluidConnectorSettings con = (FluidConnectorSettings) entry.getValue();
-                if (con.getFluidMode() == FluidConnectorSettings.FluidMode.INS) {
+                if (con.getFluidMode() == FluidConnectorSettings.FluidMode.输入) {
                     fluidConsumers.add(Pair.of(entry.getKey(), con));
                 }
             }
@@ -329,7 +329,7 @@ public class FluidChannelSettings extends DefaultChannelSettings implements ICha
 
     @Override
     public void createGui(IEditorGui gui) {
-        gui.nl().choices(TAG_MODE, "Fluid distribution mode", channelMode, ChannelMode.values());
+        gui.nl().choices(TAG_MODE, "流体分配模式", channelMode, ChannelMode.values());
     }
 
     @Override

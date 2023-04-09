@@ -270,10 +270,10 @@ public abstract class AbstractEditorPanel implements IEditorGui {
         int w = 14;
         fitWidth(w);
         ImageChoiceLabel redstoneMode = new ImageChoiceLabel(mc, gui)
-                .addChoice("Ignored", "Redstone mode:\nIgnored", iconGuiElements, 1, 1)
-                .addChoice("Off", "Redstone mode:\nOff to activate", iconGuiElements, 17, 1)
-                .addChoice("On", "Redstone mode:\nOn to activate", iconGuiElements, 33, 1)
-                .addChoice("Pulse", "Do one operation\non a pulse", iconGuiElements, 49, 1);
+                .addChoice("Ignored", "忽略红石信号", iconGuiElements, 1, 1)
+                .addChoice("Off", "关闭红石信号以激活", iconGuiElements, 17, 1)
+                .addChoice("On", "开启红石信号以激活", iconGuiElements, 33, 1)
+                .addChoice("Pulse", "一次脉冲激活一次", iconGuiElements, 49, 1);
         switch (current) {
             case IGNORED:
                 redstoneMode.setCurrentChoice("Ignored");

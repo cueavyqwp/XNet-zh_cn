@@ -37,10 +37,10 @@ public class Sensor {
 
 
     public enum SensorMode {
-        OFF,
-        ITEM,
-        FLUID,
-        ENERGY,
+        关闭,
+        物品,
+        流体,
+        能量,
         RS
     }
 
@@ -88,7 +88,7 @@ public class Sensor {
 
     private final int index;
 
-    private SensorMode sensorMode = SensorMode.OFF;
+    private SensorMode sensorMode = SensorMode.关闭;
     private Operator operator = Operator.EQUAL;
     private int amount = 0;
     private Color outputColor = OFF;
@@ -152,24 +152,24 @@ public class Sensor {
             return true;
         }
         if ((TAG_STACK + index).equals(tag)) {
-            return sensorMode == SensorMode.FLUID || sensorMode == SensorMode.ITEM;
+            return sensorMode == SensorMode.流体 || sensorMode == SensorMode.物品;
         }
         return false;
     }
 
     public void createGui(IEditorGui gui) {
         gui
-                .choices(TAG_MODE + index, "Sensor mode", sensorMode, SensorMode.values())
-                .choices(TAG_OPERATOR + index, "Operator", operator, Operator.values())
-                .integer(TAG_AMOUNT + index, "Amount to compare with", amount, 46)
-                .colors(TAG_COLOR + index, "Output color", outputColor.getColor(), COLORS)
+                .choices(TAG_MODE + index, "模式", sensorMode, SensorMode.values())
+                .choices(TAG_OPERATOR + index, "= != < > <= >=", operator, Operator.values())
+                .integer(TAG_AMOUNT + index, "要比较的数据", amount, 46)
+                .colors(TAG_COLOR + index, "输出颜色", outputColor.getColor(), COLORS)
                 .ghostSlot(TAG_STACK + index, filter)
                 .nl();
     }
 
     public boolean test(@Nullable TileEntity te, @Nonnull World world, @Nonnull BlockPos pos, LogicConnectorSettings settings) {
         switch (sensorMode) {
-            case ITEM: {
+            case 物品: {
                 if (ModSetup.rftools && RFToolsSupport.isStorageScanner(te)) {
                     int cnt = RFToolsSupport.countItems(te, filter, amount + 1);
                     return operator.match(cnt, amount);
@@ -182,7 +182,7 @@ public class Sensor {
                 }
                 break;
             }
-            case FLUID: {
+            case 流体: {
                 IFluidHandler handler = FluidChannelSettings.getFluidHandlerAt(te, settings.getFacing());
                 if (handler != null) {
                     int cnt = countFluid(handler, filter, amount + 1);
@@ -190,7 +190,7 @@ public class Sensor {
                 }
                 break;
             }
-            case ENERGY: {
+            case 能量: {
                 if (EnergyChannelSettings.isEnergyTE(te, settings.getFacing())) {
                     int cnt = EnergyChannelSettings.getEnergyLevel(te, settings.getFacing());
                     return operator.match(cnt, amount);
@@ -201,7 +201,7 @@ public class Sensor {
                 int cnt = world.getRedstonePower(pos, settings.getFacing());
                 return operator.match(cnt, amount);
             }
-            case OFF:
+            case 关闭:
             default:
                 break;
         }
@@ -222,7 +222,7 @@ public class Sensor {
         if (sm != null) {
             sensorMode = SensorMode.valueOf(((String) sm).toUpperCase());
         } else {
-            sensorMode = SensorMode.OFF;
+            sensorMode = SensorMode.关闭;
         }
         Object op = data.get(TAG_OPERATOR + index);
         if (op != null) {

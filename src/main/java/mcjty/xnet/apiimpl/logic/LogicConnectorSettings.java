@@ -138,7 +138,7 @@ public class LogicConnectorSettings extends AbstractConnectorSettings {
                 sensor.createGui(gui);
             }
         } else {
-            gui.label("Redstone:")
+            gui.label("红石信号:")
                     .integer(TAG_REDSTONE_OUT, "红石信号输出等级", redstoneOut, 40, 15)
                     .nl();
         }

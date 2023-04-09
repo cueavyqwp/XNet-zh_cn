@@ -317,9 +317,9 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
                 ChannelClientInfo info = fromServer_channels.get(editingChannel);
                 if (info != null) {
                     ChannelEditorPanel editor = new ChannelEditorPanel(channelEditPanel, mc, this, editingChannel);
-                    editor.label("Channel " + (editingChannel + 1))
+                    editor.label("频道" + (editingChannel + 1))
                             .shift(5)
-                            .toggle(TAG_ENABLED, "Enable processing on this channel", info.isEnabled())
+                            .toggle(TAG_ENABLED, "启用此频道", info.isEnabled())
                             .shift(5)
                             .text(TAG_NAME, "频道名称", info.getChannelName(), 65);
                     info.getChannelSettings().createGui(editor);
@@ -359,7 +359,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
 
                     Button paste = new Button(mc, this)
                             .setText("粘贴")
-                            .setTooltips("Create a new channel", "from the clipboard")
+                            .setTooltips("读取剪切板从而创建频道")
                             .setLayoutHint(new PositionalLayout.PositionalHint(100, 17, 53, 14))
                             .addButtonEvent(parent -> pasteChannel());
 
@@ -389,12 +389,12 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
             buttons.addChild(new Button(mc, gui).setText("取消").addButtonEvent((parent -> {
                 windowManager.closeWindow(askWindow);
             })));
-            buttons.addChild(new Button(mc, gui).setText("确认").addButtonEvent(parent -> {
+            buttons.addChild(new Button(mc, gui).setText("确定").addButtonEvent(parent -> {
                 windowManager.closeWindow(askWindow);
                 okEvent.buttonClicked(parent);
             }));
         } else {
-            buttons.addChild(new Button(mc, gui).setText("确认").addButtonEvent((parent -> {
+            buttons.addChild(new Button(mc, gui).setText("确定").addButtonEvent((parent -> {
                 windowManager.closeWindow(askWindow);
             })));
         }
@@ -414,7 +414,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
 
 
     private void copyChannel() {
-        showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.GREEN + "复制成功");
+        showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.GREEN + "已保存");
         sendServerCommand(XNetMessages.INSTANCE, TileEntityController.CMD_COPYCHANNEL,
                 TypedMap.builder()
                         .put(PARAM_INDEX, getSelectedChannel())
@@ -434,7 +434,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(selection, selection);
         } catch (Exception e) {
-            showError("Error copying to clipboard!");
+            showError("复制到剪贴板时出错!");
         }
     }
 
@@ -443,7 +443,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             String json = (String) clipboard.getData(DataFlavor.stringFlavor);
             if (json.length() > 26000) {
-                showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "Clipboard too large!");
+                showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "剪贴板过大!");
                 return;
             }
             JsonParser parser = new JsonParser();
@@ -451,7 +451,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
             String type = root.get("type").getAsString();
             IChannelType channelType = XNet.xNetApi.findType(type);
             if (channelType == null) {
-                showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "Unsupported channel type: " + type + "!");
+                showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "不支持的频道类型: " + type + "!");
                 return;
             }
             sendServerCommand(XNetMessages.INSTANCE, TileEntityController.CMD_PASTECONNECTOR,
@@ -468,9 +468,9 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
             }
             refresh();
         } catch (UnsupportedFlavorException e) {
-            showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "Clipboard does not contain connector!");
+            showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "剪贴板不包含连接器!");
         } catch (Exception e) {
-            showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "Error reading from clipboard!");
+            showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "从剪贴板读取时出错!");
         }
     }
 
@@ -479,7 +479,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             String json = (String) clipboard.getData(DataFlavor.stringFlavor);
             if (json.length() > 26000) {
-                showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "Clipboard too large!");
+                showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "剪贴板过大!");
                 return;
             }
             JsonParser parser = new JsonParser();
@@ -487,7 +487,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
             String type = root.get("type").getAsString();
             IChannelType channelType = XNet.xNetApi.findType(type);
             if (channelType == null) {
-                showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "Unsupported channel type: " + type + "!");
+                showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "不支持的频道类型: " + type + "!");
                 return;
             }
             sendServerCommand(XNetMessages.INSTANCE, TileEntityController.CMD_PASTECHANNEL,
@@ -497,9 +497,9 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
                             .build());
             refresh();
         } catch (UnsupportedFlavorException e) {
-            showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "Clipboard does not contain channel!");
+            showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "剪贴板不包含频道!");
         } catch (Exception e) {
-            showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "Error reading from clipboard!");
+            showMessage(mc, this, getWindowManager(), 50, 50, TextFormatting.RED + "从剪贴板读取时出错!");
         }
     }
 
@@ -529,7 +529,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
 
                     Button remove = new Button(mc, this).setText("x")
                             .setTextOffset(0, -1)
-                            .setTooltips("Remove this connector")
+                            .setTooltips("移除此连接器")
                             .setLayoutHint(new PositionalLayout.PositionalHint(151, 1, 9, 10))
                             .addButtonEvent(parent -> removeConnector(editingConnector));
 
@@ -540,14 +540,14 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
                     editor.setState(connectorInfo.getConnectorSettings());
                 } else {
                     Button create = new Button(mc, this)
-                            .setText("Create")
+                            .setText("创建")
                             .setLayoutHint(new PositionalLayout.PositionalHint(85, 20, 60, 14))
                             .addButtonEvent(parent -> createConnector(editingConnector));
                     connectorEditPanel.addChild(create);
 
                     Button paste = new Button(mc, this)
-                            .setText("Paste")
-                            .setTooltips("Create a new connector", "from the clipboard")
+                            .setText("粘贴")
+                            .setTooltips("读取剪切板从而创建连接器")
                             .setLayoutHint(new PositionalLayout.PositionalHint(85, 40, 60, 14))
                             .addButtonEvent(parent -> pasteConnector());
                     connectorEditPanel.addChild(paste);
@@ -627,13 +627,13 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
             panel.addChild(br);
             if (!name.isEmpty()) {
                 br.setTooltips(TextFormatting.GREEN + "Connector: " + TextFormatting.WHITE + name,
-                        TextFormatting.GREEN + "Block: " + TextFormatting.WHITE + blockName,
-                        TextFormatting.GREEN + "Position: " + TextFormatting.WHITE + BlockPosTools.toString(coordinate),
-                        TextFormatting.WHITE + "(doubleclick to highlight)");
+                        TextFormatting.GREEN + "方块: " + TextFormatting.WHITE + blockName,
+                        TextFormatting.GREEN + "位置: " + TextFormatting.WHITE + BlockPosTools.toString(coordinate),
+                        TextFormatting.WHITE + "<双击显示位置>");
             } else {
-                br.setTooltips(TextFormatting.GREEN + "Block: " + TextFormatting.WHITE + blockName,
-                        TextFormatting.GREEN + "Position: " + TextFormatting.WHITE + BlockPosTools.toString(coordinate),
-                        TextFormatting.WHITE + "(doubleclick to highlight)");
+                br.setTooltips(TextFormatting.GREEN + "方块: " + TextFormatting.WHITE + blockName,
+                        TextFormatting.GREEN + "位置: " + TextFormatting.WHITE + BlockPosTools.toString(coordinate),
+                        TextFormatting.WHITE + "<双击显示位置>");
             }
 
             panel.addChild(new Label(mc, this).setText(sidedPos.getSide().getName().substring(0, 1).toUpperCase()).setColor(color).setDesiredWidth(18));
