@@ -626,7 +626,7 @@ public class GuiController extends GenericGuiContainer<TileEntityController> {
             br.setUserObject("block");
             panel.addChild(br);
             if (!name.isEmpty()) {
-                br.setTooltips(TextFormatting.GREEN + "Connector: " + TextFormatting.WHITE + name,
+                br.setTooltips(TextFormatting.GREEN + "连接器: " + TextFormatting.WHITE + name,
                         TextFormatting.GREEN + "方块: " + TextFormatting.WHITE + blockName,
                         TextFormatting.GREEN + "位置: " + TextFormatting.WHITE + BlockPosTools.toString(coordinate),
                         TextFormatting.WHITE + "<双击显示位置>");

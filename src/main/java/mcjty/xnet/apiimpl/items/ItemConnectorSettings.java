@@ -52,13 +52,13 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
     }
 
     public enum ExtractMode {
-        提取第一个,
-        随机提取,
-        循环提取
+        第一,
+        随机,
+        循环
     }
 
     private ItemMode itemMode = ItemMode.输入;
-    private ExtractMode extractMode = ExtractMode.提取第一个;
+    private ExtractMode extractMode = ExtractMode.第一;
     private int speed = 2;
     private StackMode stackMode = StackMode.单个物品;
     private boolean oredictMode = false;
@@ -141,7 +141,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         gui
                 .nl()
 
-                .toggleText(TAG_BLACKLIST, "启用黑名单", "黑名单", blacklist).shift(2)
+                .toggleText(TAG_BLACKLIST, "启用黑名单 反之 则为白名单", "黑名单", blacklist).shift(2)
                 .toggleText(TAG_OREDICT, "标签匹配", "标签", oredictMode).shift(2)
                 .toggleText(TAG_META, "元数据匹配", "元数据", metaMode).shift(2)
                 .toggleText(TAG_NBT, "NBT匹配", "NBT", nbtMode)
@@ -220,7 +220,7 @@ public class ItemConnectorSettings extends AbstractConnectorSettings {
         itemMode = ItemMode.valueOf(((String)data.get(TAG_MODE)).toUpperCase());
         Object emode = data.get(TAG_EXTRACT);
         if (emode == null) {
-            extractMode = ExtractMode.提取第一个;
+            extractMode = ExtractMode.第一;
         } else {
             extractMode = ExtractMode.valueOf(((String) emode).toUpperCase());
         }
