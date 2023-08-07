@@ -9,6 +9,8 @@ Advanced item/liquid/energy/... networking
 
 1.16汉化工作已完成!
 
-1.12已经基本完工!
+1.12汉化工作已完成!
 
-有任何问题都可以到[issues](https://github.com/cueavyqwp/XNet-zh_cn/issues)反馈
+翻译后的模组见[资源](https://github.com/cueavyqwp/XNet-zh_cn/releases)(注意版本)
+
+有任何问题都可以到[议题](https://github.com/cueavyqwp/XNet-zh_cn/issues)反馈
