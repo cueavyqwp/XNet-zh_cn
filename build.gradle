@@ -1,14 +1,12 @@
 buildscript {
     repositories {
+        maven { url = 'http://gradle.otakusaikou.com/releases' }
+        maven { url = 'https://maven.aliyun.com/repository/central' }
+        maven { url = 'https://maven.aliyun.com/repository/jcenter' }
         jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
+        maven { url = 'https://download.mcbbs.net/maven' }
+        maven { url = 'https://bmclapi2.bangbang93.com/maven' }
+        maven { url = 'https://files.minecraftforge.net/maven' }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'

@@ -27,7 +27,7 @@ XNet也是非常高效和可扩展的
 {-------------------------------------------------------------}
 {b}基础网络通信
 {n:basic}
-A network (or local network) is represented by a number of machines
+一个网络 ( 或本地网络 ) 由许多机器
 and blocks connected using cables and connectors and one controller.
 Every network needs one controller (and not more) and it is the block
 that does the actual work.
@@ -56,10 +56,11 @@ networks (either local or remote).
 {b}通道类型
 {n:types}
 There are currently four different channel types:
-  * 物品: for transporting items
-  * 能量: for transporting energy
-  * 流体: for transporting fluids
-  * 逻辑: for sensors and logic control
+  * 物品: 用于运输物品
+  * 能量: 用于输送能量
+  * 流体: 用于输送流体
+  * 逻辑: 用于传感器和逻辑控制 for sensors and logic control
+
 
 The logic channel is special. It allows you to create sensors to
 measure various things in other blocks (like number of items,
